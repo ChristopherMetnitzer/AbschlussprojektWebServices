@@ -1,130 +1,208 @@
-========================================================================
-PROJEKTDOKUMENTATION: Student Administration Microservice
-========================================================================
+# PROJEKTDOKUMENTATION: Student Administration Microservice
 
-1. PROJEKTTEAM & AUFWAND (Aufgabe 10)
-========================================================================
+---
 
-| Name                  | Aufgabenbereich                                      | Aufwand (ca.) |
-|-----------------------|------------------------------------------------------|---------------|
-| Christopher Metnitzer | Backend Core (Controller, Service, DI, REST, Config) | 3 Stunden     |
-| [PLATZHALTER NAME]    | [PLATZHALTER AUFGABENBEREICH]                        | [STUNDEN]     |
-| [PLATZHALTER NAME]    | [PLATZHALTER AUFGABENBEREICH]                        | [STUNDEN]     |
-| [PLATZHALTER NAME]    | [PLATZHALTER AUFGABENBEREICH]                        | [STUNDEN]     |
+## AUFGABE 1: SERVICE BESCHREIBUNG & DOMAIN DRIVEN DESIGN (DDD)
+---
+(Bearbeitet von: [PLATZHALTER NAME])
 
+[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
+- Bounded Context Beschreibung
+- Context Map
+- Ubiquitous Language
+- Datenmodell Beschreibung
 
-2. SERVICE BESCHREIBUNG & DDD (Aufgabe 1)
-   (Bearbeitet von: Christopher Metnitzer)
-========================================================================
-Bounded Context: StudentAdministrationContext
-Der Service ist verantwortlich für die Verwaltung von Stammdaten der 
-Studierenden.
+---
 
-Ubiquitous Language (Allgegenwärtige Sprache):
-- Student: Repräsentiert eine eingeschriebene Person an der Hochschule.
-- Matrikelnummer: Eindeutiges Identifikationsmerkmal.
-- Semester: Fortschritt des Studiums.
+## AUFGABE 2: ASP.NET CORE WEB API CONTROLLER (CRUD)
+---
+(Bearbeitet von: Christopher Metnitzer)
 
-Datenmodell:
-- Entity: Student (Id, Name, Matrikelnummer, Semester).
-- Validierung: ID-Prüfung bei Updates, Existenzprüfung bei Löschung.
+Der "StudentsController" stellt die zentrale REST-Schnittstelle dar. 
+Er implementiert vollständige CRUD-Operationen (Create, Read, Update, Delete) 
+und nutzt die Semantik des HTTP-Protokolls korrekt aus.
 
+Implementierte Endpunkte und HTTP-Verben:
 
-3. ASP.NET CORE WEB API CONTROLLER (Aufgabe 2)
-   (Bearbeitet von: Christopher Metnitzer)
-========================================================================
-Implementierung des "StudentsController" mit voller CRUD-Funktionalität.
+1. GET (Read) - Safe Method
+   - Route: /api/students
+     Funktion: Liefert eine Liste aller Studenten.
+     Status: 200 OK.
+   
+   - Route: /api/students/{id}
+     Funktion: Liefert einen spezifischen Studenten.
+     Status: 200 OK (gefunden) oder 404 Not Found (wenn ID ungültig).
 
-Eingesetzte HTTP-Verben:
-- GET:    Lesen von Daten (Alle Studenten oder Einzelabruf per ID).
-          Status: 200 OK / 404 Not Found.
-- POST:   Erstellen eines neuen Studenten.
-          Status: 201 Created (inkl. Location-Header).
-- PUT:    Vollständiges Update eines Studenten.
-          Status: 204 No Content / 400 Bad Request.
-- DELETE: Löschen eines Studenten.
-          Status: 204 No Content.
+2. POST (Create)
+   - Route: /api/students
+     Funktion: Erstellt eine neue Ressource.
+     Status: 201 Created. 
+     Besonderheit: Es wird der Standard "CreatedAtAction" verwendet, 
+     um im HTTP-Header "Location" die URL zur neu erstellten Ressource 
+     zurückzugeben.
 
+3. PUT (Update) - Idempotent
+   - Route: /api/students/{id}
+     Funktion: Überschreibt einen existierenden Datensatz vollständig.
+     Status: 204 No Content (Erfolg ohne Body) oder 400 Bad Request 
+     (Validierungsfehler).
 
-4. ASYNCHRONES MESSAGING & LOGGING (Aufgabe 3)
-   (Bearbeitet von: [PLATZHALTER])
-========================================================================
-[HIER TEXT VOM GRUPPENMITGLIED EINFÜGEN]
-
-
-5. OPENAPI SPEZIFIKATION (Aufgabe 4)
-   (Bearbeitet von: [PLATZHALTER])
-========================================================================
-[HIER TEXT VOM GRUPPENMITGLIED EINFÜGEN]
+4. DELETE (Delete)
+   - Route: /api/students/{id}
+     Funktion: Entfernt einen Datensatz.
+     Status: 204 No Content (Erfolg) oder 404 Not Found.
 
 
-6. DEPENDENCY INJECTION & SERVICE ARCHITEKTUR (Aufgabe 5)
-   (Bearbeitet von: Christopher Metnitzer)
-========================================================================
-Umsetzung der "Separation of Concerns":
-- Interface: IStudentService (Definiert Methoden).
-- Klasse:    StudentService (Implementiert Logik & In-Memory Datenhaltung).
-- Injection: Constructor Injection im StudentsController.
+---
 
-Registrierung in Program.cs:
-builder.Services.AddSingleton<IStudentService, StudentService>();
+## AUFGABE 3: ASYNCHRONES MESSAGING & LOGGING
+---
+(Bearbeitet von: [PLATZHALTER NAME])
 
-Begründung für Singleton:
-Da keine Datenbank verwendet wird, liegen die Daten in einer Liste im 
-Arbeitsspeicher. "Singleton" garantiert, dass diese Liste über die 
-gesamte Laufzeit der Applikation erhalten bleibt und nicht bei jedem 
-Request gelöscht wird.
+[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
 
 
-7. CLIENT APPLIKATION (Aufgabe 6)
-   (Bearbeitet von: [PLATZHALTER])
-========================================================================
-[HIER TEXT VOM GRUPPENMITGLIED EINFÜGEN]
+## AUFGABE 4: OPENAPI SPEZIFIKATION
+---
+(Bearbeitet von: [PLATZHALTER NAME])
+
+[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
 
 
-8. ROUTING (Aufgabe 7)
-   (Bearbeitet von: [PLATZHALTER])
-========================================================================
-[HIER TEXT VOM GRUPPENMITGLIED EINFÜGEN]
-(Hinweis: Standard-Routing "api/[controller]" wurde von Christopher 
-implementiert, Custom-Route fehlt noch von Kollegen).
+## AUFGABE 5: SERVICE-KLASSE & DEPENDENCY INJECTION
+---
+(Bearbeitet von: Christopher Metnitzer)
+
+Um die Architektur sauber zu halten ("Separation of Concerns"), wurde 
+keine Logik im Controller implementiert. Stattdessen kommt das 
+Service-Pattern zum Einsatz.
+
+Architektur-Komponenten:
+1. IStudentService (Interface): Definiert den Vertrag und ermöglicht 
+   Mocking/Testing.
+2. StudentService (Implementation): Beinhaltet die Geschäftslogik und 
+   die Datenhaltung (In-Memory Liste).
+
+Dependency Injection (DI) Strategie:
+Die Registrierung erfolgt in der Program.cs mittels:
+"builder.Services.AddSingleton<IStudentService, StudentService>();"
+
+Begründung der Scope-Wahl "Singleton":
+Da in diesem Projekt keine persistente Datenbank (wie SQL) verwendet wird, 
+sondern die Daten zur Laufzeit in einer List<Student> im Arbeitsspeicher 
+liegen, ist "Singleton" zwingend erforderlich.
+- Bei "AddScoped" oder "AddTransient" würde bei jedem HTTP-Request eine 
+  neue, leere Liste erstellt werden. Daten wären sofort verloren.
+- "AddSingleton" garantiert, dass dieselbe Instanz (und damit die Daten) 
+  über die gesamte Laufzeit der Applikation verfügbar bleiben.
+
+---
+
+## AUFGABE 6: CLIENT APPLIKATION
+(Bearbeitet von: [PLATZHALTER NAME])
+
+[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
+
+---
+
+## AUFGABE 7: ROUTING
+---
+(Bearbeitet von: [PLATZHALTER NAME])
 
 
-9. REST PRINZIPIEN (Aufgabe 8)
-   (Bearbeitet von: Christopher Metnitzer)
-========================================================================
-Der Service folgt strikt dem REST-Architekturstil:
+[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
+(Hinweis: Das Standard-Routing [Route("api/[controller]")] wurde von 
+Christopher im Backend bereits implementiert. Custom Routes fehlen noch.)
 
-A) Statelessness (Zustandslosigkeit):
-Der Server speichert keinen Session-Status (Client-State). Jeder Request 
-enthält alle nötigen Informationen zur Verarbeitung. Dies ermöglicht 
-einfache Skalierbarkeit.
+---
 
-B) Uniform Interface (Einheitliche Schnittstelle):
-Verwendung von ressourcen-basierten URIs (/api/students) und Standard-
-HTTP-Methoden (GET, POST, PUT, DELETE) zur Manipulation der Ressourcen.
+## AUFGABE 8: REST PRINZIPIEN
+---
+(Bearbeitet von: Christopher Metnitzer)
 
 
-10. APPSETTINGS.JSON (Aufgabe 9)
-    (Bearbeitet von: Christopher Metnitzer)
-========================================================================
-Konfigurationswerte wurden ausgelagert, um Hardcoding zu vermeiden.
+Der Service wurde strikt nach den Design-Prinzipien von Roy Fielding (REST) 
+entwickelt. Besonders hervorzuheben sind:
 
-Verwendete Keys:
-- "UniversitySettings:Name"
-- "UniversitySettings:Semester"
+A) Statelessness (Zustandslosigkeit)
+Der Server speichert keinen Client-Kontext (Session State) zwischen zwei 
+Anfragen. Jeder Request (z.B. GET /api/students/1) enthält alle Informationen, 
+die zur Verarbeitung notwendig sind.
+Vorteil: Der Service ist beliebig horizontal skalierbar, da keine Session-
+Affinität benötigt wird.
 
-Diese Werte werden per IConfiguration in den Controller injiziert und 
-in der GET-Response ausgegeben.
+B) Uniform Interface (Einheitliche Schnittstelle)
+Die API ist ressourcen-orientiert aufgebaut. Die URIs enthalten Nomen 
+(/api/students), keine Verben (/api/createStudent). Die Manipulation 
+der Ressourcen erfolgt ausschließlich über die standardisierten HTTP-Verben 
+(GET, POST, PUT, DELETE), was die Schnittstelle für Entwickler intuitiv 
+nutzbar macht.
+
+---
+
+## AUFGABE 9: NUTZUNG DER APPSETTINGS.JSON
+(Bearbeitet von: Christopher Metnitzer)
+
+Um Hardcoding im Quellcode zu vermeiden ("Configuration over Code"), 
+wurden variable Parameter in die Konfigurationsdatei ausgelagert.
+
+Struktur in appsettings.json:
+"UniversitySettings": {
+  "Name": "FH Campus02 Business Analytics & AI",
+  "Semester": "Wintersemester 2025/2026",
+  "MaxStudentsPerCourse": 20
+}
+
+Implementierung:
+Die Werte werden über das Interface "IConfiguration" mittels Dependency 
+Injection in den Controller geladen. Dies ermöglicht es, Umgebungsvariablen 
+(z.B. Semester) zu ändern, ohne den Code neu kompilieren und deployen 
+zu müssen.
+
+---
+
+## AUFGABE 10: PROJEKTTEAM & AUFWAND
+---
+(Bearbeitet von: Team)
 
 
-11. FUNKTIONIERENDE GESAMTLÖSUNG (Aufgabe 11)
-    (Status Gesamtprojekt)
-========================================================================
-[PLATZHALTER FÜR STATUS]
+Übersicht der Verantwortlichkeiten und des geschätzten Aufwands:
+
+MITGLIED 1: Christopher Metnitzer
+---------------------------------
+Aufgabenbereich: Backend Core Implementation
+(Aufgaben 2, 5, 8, 9: Controller, Services, DI, REST, Config)
+Aufwand: ca. 3 Stunden
+
+MITGLIED 2: [PLATZHALTER NAME]
+------------------------------
+Aufgabenbereich: [PLATZHALTER]
+Aufwand: [PLATZHALTER]
+
+MITGLIED 3: [PLATZHALTER NAME]
+------------------------------
+Aufgabenbereich: [PLATZHALTER]
+Aufwand: [PLATZHALTER]
+
+MITGLIED 4: [PLATZHALTER NAME]
+------------------------------
+Aufgabenbereich: [PLATZHALTER]
+Aufwand: [PLATZHALTER]
+
+---
 
 
-12. AUTHENTIFIZIERUNG & SECURITY (Aufgabe 12)
-    (Bearbeitet von: [PLATZHALTER])
-========================================================================
-[HIER TEXT VOM GRUPPENMITGLIED EINFÜGEN]
+## AUFGABE 11: FUNKTIONIERENDE GESAMTLÖSUNG
+---
+(Status des Gesamtprojekts)
+
+[PLATZHALTER: LINK ZUR ZIP DATEI ODER STATUSBERICHT]
+
+---
+
+## AUFGABE 12: AUTHENTIFIZIERUNG & SECURITY
+---
+(Bearbeitet von: [PLATZHALTER NAME])
+
+
+[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
