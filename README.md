@@ -8,9 +8,7 @@ Um das gesamte Projekt (Backend API und Client) ohne manuelle Installation von A
 
 **2.**  Öffnen Sie ein Terminal im Hauptverzeichnis des Projekts und führen Sie aus:
 
-        ```bash
             docker compose up --build
-        ```
 
 **3.**  Zugriff:
         Sobald die Container laufen, sind die Dienste unter folgenden Adressen erreichbar:
