@@ -1,3 +1,26 @@
+# ANWENDUNG
+
+## Start mit Docker (Empfohlen)
+
+Um das gesamte Projekt (Backend API und Client) ohne manuelle Installation von Abhängigkeiten zu starten, verwende Docker.
+
+**1.**  Docker Desktop (oder Docker Engine) ist installiert und läuft.
+
+**2.**  Öffnen Sie ein Terminal im Hauptverzeichnis des Projekts und führen Sie aus:
+        ```bash
+            docker compose up --build
+        ```
+
+**3.**  Zugriff:
+        Sobald die Container laufen, sind die Dienste unter folgenden Adressen erreichbar:
+
+        Client (App): http://localhost:5173
+        Backend (Swagger UI): http://localhost:5187/swagger
+        API Endpunkt: http://localhost:5187/api/students
+
+
+---
+
 # PROJEKTDOKUMENTATION: Student Administration Microservice
 
 ---
