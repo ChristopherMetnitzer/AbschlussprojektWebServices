@@ -121,9 +121,15 @@ liegen, ist "Singleton" zwingend erforderlich.
 ---
 
 ## AUFGABE 6: CLIENT APPLIKATION
-(Bearbeitet von: [PLATZHALTER NAME])
+(Bearbeitet von: Thomas Proksch)
 
-[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
+Client durch SPA realisiert.
+API Verwendung ist in studentStore.ts implementiert.
+In einer Tabellen Komponente werden die Daten der API dargestellt, bzw. gibt es die Möglichkeit einen Studenten zu ändern, zu löschen oder neu anzulegen.
+In App.vue ist die Komponente importiert.
+main.ts führt die ganze App aus. Außerdem ist hier die Adresse der API definiert (da es nur eine Adresse gibt)
+
+
 
 ---
 
@@ -196,10 +202,15 @@ Aufgabenbereich: Backend Core Implementation
 (Aufgaben 2, 5, 8, 9: Controller, Services, DI, REST, Config)
 Aufwand: ca. 3 Stunden
 
-MITGLIED 2: [PLATZHALTER NAME]
+MITGLIED 2: Thomas Proksch
 ------------------------------
-Aufgabenbereich: [PLATZHALTER]
-Aufwand: [PLATZHALTER]
+Aufgabenbereich: Client
+Aufgabe 6
+Aufwand:
+Docker: ca 0.5 Std
+Client: ca 1,5 Std
+
+            
 
 MITGLIED 3: [PLATZHALTER NAME]
 ------------------------------
@@ -218,13 +229,13 @@ Aufwand: [PLATZHALTER]
 ---
 (Status des Gesamtprojekts)
 
-[PLATZHALTER: LINK ZUR ZIP DATEI ODER STATUSBERICHT]
+Siehe 1. Punkt: Anwendung
 
 ---
 
 ## AUFGABE 12: AUTHENTIFIZIERUNG & SECURITY
 ---
-(Bearbeitet von: [PLATZHALTER NAME])
+(Bearbeitet von: Thomas Proksch)
 
 
-[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
+Todo
