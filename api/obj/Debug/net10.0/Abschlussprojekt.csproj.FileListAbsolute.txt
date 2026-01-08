@@ -1,0 +1,73 @@
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/appsettings.Development.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/appsettings.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/Abschlussprojekt.staticwebassets.endpoints.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/Abschlussprojekt
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/Abschlussprojekt.deps.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/Abschlussprojekt.runtimeconfig.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/Abschlussprojekt.dll
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/Abschlussprojekt.pdb
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/Microsoft.AspNetCore.OpenApi.dll
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/Microsoft.OpenApi.dll
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/Swashbuckle.AspNetCore.Swagger.dll
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/Abschlussprojekt.csproj.AssemblyReference.cache
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/rpswa.dswa.cache.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/Abschlussprojekt.GeneratedMSBuildEditorConfig.editorconfig
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/Abschlussprojekt.AssemblyInfoInputs.cache
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/Abschlussprojekt.AssemblyInfo.cs
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/Abschlussprojekt.csproj.CoreCompileInputs.cache
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/Abschlussprojekt.MvcApplicationPartsAssemblyInfo.cs
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/Abschlussprojekt.MvcApplicationPartsAssemblyInfo.cache
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/rjimswa.dswa.cache.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/rjsmrazor.dswa.cache.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/rjsmcshtml.dswa.cache.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/scopedcss/bundle/Abschlussprojekt.styles.css
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/staticwebassets.build.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/staticwebassets.build.json.cache
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/staticwebassets.development.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/staticwebassets.build.endpoints.json
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/swae.build.ex.cache
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/Abschlus.A4021437.Up2Date
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/Abschlussprojekt.dll
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/refint/Abschlussprojekt.dll
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/Abschlussprojekt.pdb
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/Abschlussprojekt.genruntimeconfig.cache
+/Users/chris/Desktop/FH Campus02/WebServices/Abschlussprojekt/Abschlussprojekt/obj/Debug/net10.0/ref/Abschlussprojekt.dll
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/appsettings.Development.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/appsettings.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/Abschlussprojekt.staticwebassets.endpoints.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/Abschlussprojekt
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/Abschlussprojekt.deps.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/Abschlussprojekt.runtimeconfig.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/Abschlussprojekt.dll
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/Abschlussprojekt.pdb
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/Microsoft.AspNetCore.OpenApi.dll
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/Microsoft.OpenApi.dll
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/Swashbuckle.AspNetCore.Swagger.dll
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/bin/Debug/net10.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlussprojekt.csproj.AssemblyReference.cache
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/rpswa.dswa.cache.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlussprojekt.GeneratedMSBuildEditorConfig.editorconfig
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlussprojekt.AssemblyInfoInputs.cache
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlussprojekt.AssemblyInfo.cs
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlussprojekt.csproj.CoreCompileInputs.cache
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlussprojekt.MvcApplicationPartsAssemblyInfo.cs
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlussprojekt.MvcApplicationPartsAssemblyInfo.cache
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlussprojekt.sourcelink.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/rjimswa.dswa.cache.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/rjsmrazor.dswa.cache.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/rjsmcshtml.dswa.cache.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/scopedcss/bundle/Abschlussprojekt.styles.css
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/staticwebassets.build.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/staticwebassets.build.json.cache
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/staticwebassets.development.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/staticwebassets.build.endpoints.json
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/swae.build.ex.cache
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlus.A4021437.Up2Date
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlussprojekt.dll
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/refint/Abschlussprojekt.dll
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlussprojekt.pdb
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/Abschlussprojekt.genruntimeconfig.cache
+/home/tho/Desktop/Campus02/03_web-service/AbschlussprojektWebServices/api/obj/Debug/net10.0/ref/Abschlussprojekt.dll
