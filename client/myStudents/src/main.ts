@@ -1,4 +1,5 @@
 import './assets/main.css'
+import axios from 'axios'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -17,6 +18,9 @@ const vuetify = createVuetify({
   components,
   directives,
 })
+
+axios.defaults.baseURL = 'http://localhost:5187'
+
 
 const app = createApp(App)
 
