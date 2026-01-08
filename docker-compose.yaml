@@ -1,0 +1,21 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "5187:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+
+  client:
+    build:
+      context: ./client/myStudents
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173" # Access UI at localhost:5173
+    depends_on:
+      - api
+    volumes:
+      - ./client/myStudents/src:/app/src
