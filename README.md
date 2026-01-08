@@ -7,6 +7,7 @@ Um das gesamte Projekt (Backend API und Client) ohne manuelle Installation von A
 **1.**  Docker Desktop (oder Docker Engine) ist installiert und läuft.
 
 **2.**  Öffnen Sie ein Terminal im Hauptverzeichnis des Projekts und führen Sie aus:
+
         ```bash
             docker compose up --build
         ```

@@ -1,38 +1,113 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
 import Student from '@/types/Student'
 import axios from 'axios'
 
-export const useStudentStore = defineStore ('student', () => {
-    const students = ref<Student[]>([])
-    const loading = ref(false)
-    const error = ref<string | null>(null)
+export const useStudentStore = defineStore('student', {
+    state: () => ({
+        students: [] as Student[],
+        currentStudent: null as Student| null,
+        loading: false,
+        error: null as string | null
+    }),
 
-    const API_URL = ''
+actions: {
+    async getStudents() {
+      this.loading = true;
+      this.error = null;
+      try {
+        const response = await axios.get('/api/Students');
+        const responseData = response.data;
+        let studentsList: Student[] = [];
+        let universityName = '';
+        
+        if (Array.isArray(responseData)) {
+            studentsList = responseData;
+        } else if (responseData && Array.isArray(responseData.data)) {
+             // Lowercase 'data' (camelCase JSON default)
+            studentsList = responseData.data;
+            universityName = responseData.university || '';
+        } else if (responseData && Array.isArray(responseData.Data)) {
+            // PascalCase 'Data' (if JSON serializer preserves casing)
+            studentsList = responseData.Data;
+            universityName = responseData.University || '';
+        } else {
+            console.error('Unexpected API response format:', responseData);
+        }
 
-    async function fetchStudents() {
-        loading.value = true
+        // Anzeigen von Universität falls vorhanden
+        if (universityName) {
+            this.students = studentsList.map(s => ({
+                ...s, 
+                university: s.university || universityName
+            }));
+        } else {
+            this.students = studentsList;
+        }
+      } catch (err: any) {
+        this.error = err.message || 'Failed to load students';
+        console.error('API Error:', err);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async getStudentById(id: number) {
+      this.loading = true;
+      this.error = null;
+      try {
+        const { data } = await axios.get<Student>(`/api/Students/${id}`);
+        this.currentStudent = data;
+      } catch (err: any) {
+        this.error = err.message || 'Failed to load student';
+        console.error(err);
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async createStudent(student: Student) {
+        this.loading = true;
         try {
-            const response = await fetch(API_URL)
-            if (!response.ok) throw new Error('Failed to fetch')
-            students.value = await response.json()
-        } catch (err) {
-            error.value = err instanceof Error ? err.message : 'Unknown error'
-            console.error(err)
+            const { data } = await axios.post<Student>('/api/Students', student);
+            this.students.push(data);
+        } catch(error) {
+            console.error('Erstellen fehlgeschlagen!')
         } finally {
-            loading.value = false
+            this.loading = false;
+        }
+    },
+
+    async deleteStudent(id: number) {
+        this.loading = true;
+        try {
+            await axios.delete(`/api/Students/${id}`);
+            this.students = this.students.filter(s => s.id !== id);
+            
+            if (this.currentStudent?.id === id) {
+                this.currentStudent = null;
+            }
+        } catch (error) {
+            console.log('Löschen fehlgeschlagen!');
+            throw error;
+        } finally {
+            this.loading = false;
+        }
+    },
+
+    async updateStudent(student: Student) {
+        this.loading = true;
+        try {
+            await axios.put(`/api/Students/${student.id}`, student);
+            const index = this.students.findIndex(s => s.id === student.id);
+            if (index !== -1) {
+                this.students[index] = student;
+            }
+        } catch (error) {
+            console.error('Update fehlgeschlagen!');
+            throw error;
+        } finally {
+            this.loading = false;
         }
     }
-
-    async function addStudent(student: Student) {
-        // POST Student
-    }
-
-    async function deleteStudent(id: number) {
-        // DELETE Student
-    }
-
-    async function updateStudent(matrikelnummer: string, id?: number, name?: string, semester?: string) {
-        // UPDATE Student
-    }
+  }
 })
