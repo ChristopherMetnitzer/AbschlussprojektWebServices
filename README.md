@@ -40,39 +40,32 @@ Um das gesamte Projekt (Backend API und Client) ohne manuelle Installation von A
 ---
 (Bearbeitet von: Christopher Metnitzer)
 
-Der "StudentsController" stellt die zentrale REST-Schnittstelle dar. 
-Er implementiert vollständige CRUD-Operationen (Create, Read, Update, Delete) 
-und nutzt die Semantik des HTTP-Protokolls korrekt aus.
+Der "StudentsController" ist die zentrale REST-Schnittstelle. Es sind CRUD-Operationen (Create, Read, Update, Delete) implementiert und nutzt das HTTP-Protokoll korrekt aus.
 
 Implementierte Endpunkte und HTTP-Verben:
 
-1. GET (Read) - Safe Method
-   - Route: /api/students
-     Funktion: Liefert eine Liste aller Studenten.
-     Status: 200 OK.
-   
-   - Route: /api/students/{id}
-     Funktion: Liefert einen spezifischen Studenten.
-     Status: 200 OK (gefunden) oder 404 Not Found (wenn ID ungültig).
+GET (Lesen)
 
-2. POST (Create)
-   - Route: /api/students
-     Funktion: Erstellt eine neue Ressource.
-     Status: 201 Created. 
-     Besonderheit: Es wird der Standard "CreatedAtAction" verwendet, 
-     um im HTTP-Header "Location" die URL zur neu erstellten Ressource 
-     zurückzugeben.
+- /api/students Funktion liefert alle Studenten in einer Liste. 
+Status: 200 OK.
 
-3. PUT (Update) - Idempotent
-   - Route: /api/students/{id}
-     Funktion: Überschreibt einen existierenden Datensatz vollständig.
-     Status: 204 No Content (Erfolg ohne Body) oder 400 Bad Request 
-     (Validierungsfehler).
+- /api/students/{id} liefert einen Studenten, bei dem die id die übergebene ist. 
+Status: 200 OK (Der Student wurde gefunden) oder 404 Not Found (Student wurde nicht gefunden).
 
-4. DELETE (Delete)
-   - Route: /api/students/{id}
-     Funktion: Entfernt einen Datensatz.
-     Status: 204 No Content (Erfolg) oder 404 Not Found.
+POST (Erstellen)
+
+- Route: /api/students erstellt eine neue Ressource. 
+Status: 201 Created (Der Student wurde erfolgreich erstellt)
+
+PUT (Überschreiben)
+
+- /api/students/{id} überschreibt den Datensatz mit der gewählten id komplett. 
+Status: 204 No Content (Erfolg ohne Body) oder 400 Bad Request (Validierungsfehler).
+
+DELETE (Löschen)
+
+- Route: /api/students/{id} löscht den gesamten Datensatz vom Student mit dieser id.
+Status: 204 No Content (Erfolg) oder 404 Not Found (wenn es die id nicht gibt).
 
 
 ---
@@ -95,28 +88,19 @@ Implementierte Endpunkte und HTTP-Verben:
 ---
 (Bearbeitet von: Christopher Metnitzer)
 
-Um die Architektur sauber zu halten ("Separation of Concerns"), wurde 
-keine Logik im Controller implementiert. Stattdessen kommt das 
-Service-Pattern zum Einsatz.
+Um den Code und die Softwarearchitektur sauber zu machen ("Separation of Concerns"), wurde Fokus darauf gelegt, dass keine Logik im Controller implementiert wird. Es wurde anstatt dessen das Service Pattern verwendet.
 
-Architektur-Komponenten:
-1. IStudentService (Interface): Definiert den Vertrag und ermöglicht 
-   Mocking/Testing.
-2. StudentService (Implementation): Beinhaltet die Geschäftslogik und 
-   die Datenhaltung (In-Memory Liste).
+Komponenten:
+1. IStudentService (Interface): Legt fest, wie der StudentService aufgebaut ist und erlaubt das Testen.
+2. StudentService (Implementierung): Logik und Datenhaltung sind hier definiert.
 
-Dependency Injection (DI) Strategie:
-Die Registrierung erfolgt in der Program.cs mittels:
-"builder.Services.AddSingleton<IStudentService, StudentService>();"
+Dependency Injection:
+Im Program.cs wird mittels "builder.Services.AddSingleton<IStudentService, StudentService>();" registriert.
 
-Begründung der Scope-Wahl "Singleton":
-Da in diesem Projekt keine persistente Datenbank (wie SQL) verwendet wird, 
-sondern die Daten zur Laufzeit in einer List<Student> im Arbeitsspeicher 
-liegen, ist "Singleton" zwingend erforderlich.
-- Bei "AddScoped" oder "AddTransient" würde bei jedem HTTP-Request eine 
-  neue, leere Liste erstellt werden. Daten wären sofort verloren.
-- "AddSingleton" garantiert, dass dieselbe Instanz (und damit die Daten) 
-  über die gesamte Laufzeit der Applikation verfügbar bleiben.
+Warum wurde Singleton gewählt:
+Weil wir in diesem Projekt keine persistente Datenbank, sondern eine Liste verwenden, ist es unbedingt nötig sicher zu sein, dass es nur eine Version dieser Liste zu jedem Zeitpunkt geben kann.
+- Würde ich "AddScoped" oder "AddTransient" verwenden, würde bei jedem HTTP-Request eine neue Liste erstellt werden. Damit würde ich automatisch alle Daten verlierden.
+- Mit "AddSingleton" ist sicher, dass dieselbe Instanz (und damit die Daten) verfügbar sind und bleiben solange die Applikation läuft.
 
 ---
 
@@ -148,23 +132,46 @@ Christopher im Backend bereits implementiert. Custom Routes fehlen noch.)
 ---
 (Bearbeitet von: Christopher Metnitzer)
 
+REST (Representational State Transfer) hat insgesamt sechs Einschränkungen (Constraints), die vom System erfüllt werden müssen:
 
-Der Service wurde strikt nach den Design-Prinzipien von Roy Fielding (REST) 
-entwickelt. Besonders hervorzuheben sind:
+1. Client-Server-Architektur
+- Klare Trennung: Client macht UI, Server macht Daten und Logik
+2. Statelessness (Zustandslosigkeit)
+- Server speichert keine Daten über User-Sessions, Anfragen sind unabhängig.
+3. Cacheability (Pufferspeicherbarkeit)
+- Server sagt Client, was und wie lange es gecached werden soll
+4. Layered System (Mehrschichtiges System)
+- Der Client weiß nicht ob er mit dem Server, Proxy oder LoadBalancer spricht
+5. Code on Demand (optional)
+- Server kann Code an Client schicken, den dieser ausführt
+6. Uniform Interface (Einheitliche Schnittstelle)
+- Standardisierte Kommunikation durch eindeutige Adressen und feste Methoden
 
-A) Statelessness (Zustandslosigkeit)
-Der Server speichert keinen Client-Kontext (Session State) zwischen zwei 
-Anfragen. Jeder Request (z.B. GET /api/students/1) enthält alle Informationen, 
-die zur Verarbeitung notwendig sind.
-Vorteil: Der Service ist beliebig horizontal skalierbar, da keine Session-
-Affinität benötigt wird.
+In meiner Implementierung des Student Administration Microservice waren folgende Prinzipien davon besonders leitend:
 
-B) Uniform Interface (Einheitliche Schnittstelle)
-Die API ist ressourcen-orientiert aufgebaut. Die URIs enthalten Nomen 
-(/api/students), keine Verben (/api/createStudent). Die Manipulation 
-der Ressourcen erfolgt ausschließlich über die standardisierten HTTP-Verben 
-(GET, POST, PUT, DELETE), was die Schnittstelle für Entwickler intuitiv 
-nutzbar macht.
+##### A) Statelessness (Zustandslosigkeit)
+
+Theorie:
+Vom Server aus werden keine Daten vom Client zwischen einzelnen HTTP Anfragen gespeichert.
+Demnach muss jede Anfrage ohne Extrainformationen alle Infos haben, die zur Verarbeitung der Daten notwendig sind!
+
+Es wurde folgendermaßen umgesetzt:
+Ich habe im "StudentsController" KEINE Form von Session-Speicher implementiert. Jede Methode die aufgerufen wird ist vollständig alleine und ohne extra Daten funktionsfähig.
+- Der Beweis hierfür ist, dass der Controller bei einem Update zwingend die ID in der URL und das Objekt im Body benötigt, weil er sich nicht auf vorherige Eingaben verlassen kann oder sollte.
+
+##### B) Uniform Interface (Einheitliche Schnittstelle)
+
+Theorie:
+Wenn ein Client mit einem Server kommuniziert, muss diese Kommunikation/Interaktion über eine standardisierte Schnittstelle passieren. Dadurch wird sichergestellt, dass die Komponenten voneinander unabhängig/entkoppelt sind.
+
+Es wurde folgendermaßen umgesetzt:
+Es werden ressourcen-basierte URIs und Standard-HTTP-Methoden verwendet.
+- Ressourcen: Die URI "/api/students" repräsentiert die Liste an Studenten.
+- Verben: Anstatt Aktionen in der URL zu kodieren (kein "/createStudent"), nutze ich HTTP-Verben, so wie sie eigentlich gedacht sind:
+    * GET zum Lesen
+    * POST zum Erstellen
+    * DELETE zum Löschen
+- Status Codes: Der Server antwortet mit standardisierten Codes (HTTP Codes wie: 200, 201, 204) damit jede Form von Client die Antwort sofort versteht.
 
 ---
 
@@ -174,7 +181,8 @@ nutzbar macht.
 Um Hardcoding im Quellcode zu vermeiden ("Configuration over Code"), 
 wurden variable Parameter in die Konfigurationsdatei ausgelagert.
 
-Struktur in appsettings.json:
+##### Struktur in appsettings.json:
+
 "UniversitySettings": {
   "Name": "FH Campus02 Business Analytics & AI",
   "Semester": "Wintersemester 2025/2026",
@@ -182,10 +190,8 @@ Struktur in appsettings.json:
 }
 
 Implementierung:
-Die Werte werden über das Interface "IConfiguration" mittels Dependency 
-Injection in den Controller geladen. Dies ermöglicht es, Umgebungsvariablen 
-(z.B. Semester) zu ändern, ohne den Code neu kompilieren und deployen 
-zu müssen.
+Die Werte werden über das Interface "IConfiguration" über DI in den Controller geladen. 
+Dadurch wird es möglich, Umgebungsvariablen (z.B. Semester) zu ändern, ohne den Code neu zu kompilieren und deployen.
 
 ---
 
