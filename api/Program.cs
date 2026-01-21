@@ -1,5 +1,6 @@
 using Abschlussprojekt.Services;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Controller hinzufügen
@@ -21,6 +22,10 @@ builder.Services.AddCors(options =>
 // 3. Service registrieren (Aufgabe 5)
 // Wir nutzen "AddSingleton", damit die Liste im Speicher bleibt, solange die App läuft!
 builder.Services.AddSingleton<IStudentService, StudentService>();
+//Queue & Worker registrieren
+
+builder.Services.AddSingleton<IStudentEventQueue, InMemoryStudentEventQueue>();
+builder.Services.AddHostedService<StudentEventWorker>();
 
 var app = builder.Build();
 
@@ -32,6 +37,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
+
+
 
 // app.UseHttpsRedirection();
 app.UseAuthorization();
