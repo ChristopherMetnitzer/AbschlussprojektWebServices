@@ -266,12 +266,11 @@ Aufwand:
 Docker: ca 0.5 Std
 Client: ca 1,5 Std
 
-            
 
-MITGLIED 3: [PLATZHALTER NAME]
+MITGLIED 3: Neven Lazic
 ------------------------------
-Aufgabenbereich: [PLATZHALTER]
-Aufwand: [PLATZHALTER]
+Aufgabenbereich: Aufgabe 3 sowie alle erweiterten Aufgaben (Messaging & Logging, Resilience-Patterns, Load Balancing & Skalierung)
+Aufwand: ca. 4–5 Stunden
 
 MITGLIED 4: [PLATZHALTER NAME]
 ------------------------------
@@ -297,8 +296,107 @@ Siehe 1. Punkt: Anwendung
 
 ## ERWEITERTE AUFGABE 1: CONTENT NEGOTIATION
 ---
-(Bearbeitet von: Thomas Proksch)
+(Bearbeitet von: Neven Lazic)
+### Response Formate
+Clients sollen über Negotiation unterschiedliche Response-Formate (JSON oder XML) vom gleichen Endpunkt erhalten können
+in der 'Program.cs ' wurde XML-Formater tusätzlich zum standart JSON-Formatte aktiviert
+cssharp
+builder.Services
+    .AddControllers()
+    .AddXmlSerializerFormatters();
 
+Zwei GET-Endpunkte wurden für mehrere Response-Formater erweitert in StudentsController 
+[HttpGet]
+[Produces("application/json", "application/xml")]
+public IActionResult GetAll()
+{
+    var students = _service.GetAll();
+    return Ok(new StudentsResponseDto
+    {
+        University = _config["UniversitySettings:Name"],
+        Data = students.ToList()
+    });
+}
+[HttpGet("{id:int}")]
+[Produces("application/json", "application/xml")]
+public IActionResult GetById(int id)
+{
+    var student = _service.GetById(id);
+    if (student == null) return NotFound();
+    return Ok(student);
+}
+
+JSON anfordern:
+in bash:
+ curl -H "Accept: application/json" -i http://localhost:5187/api/students/1
+
+TP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Fri, 23 Jan 2026 18:16:32 GMT
+Server: Kestrel
+Cache-Control: public,max-age=60
+Transfer-Encoding: chunked
+Vary: Accept-Encoding
+
+{"id":1,"name":"Max Mustermann","matrikelnummer":"123456","semester":3,"university":null}
+
+XML anfordern:
+in bash:
+curl -H "Accept: application/xml" -i http://localhost:5187/api/students/1
+TP/1.1 200 OK
+Content-Length: 216
+Content-Type: application/xml; charset=utf-8
+Date: Fri, 23 Jan 2026 18:17:40 GMT
+Server: Kestrel
+Cache-Control: public,max-age=60
+Vary: Accept-Encoding
+
+<Student xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><Id>1</Id><Name>Max Mustermann</Name><Matrikelnummer>123456</Matrikelnummer><Semester>3</Semester></Student>
+
+Accept-Header liefert die API automatisch das gewünschte  Response-Format (application/json oder application/xml)
+### Custom Formatter 
+
+Für den Endpoint /api/students/export wurde ein custon CSV Output Formatter implemetiert
+Der Formater wird automatisch verwendet, wenn der Client im Accept- Header text/csv anfordert.
+
+curl -H "Accept: text/csv" -i http://localhost:5187/api/students/export
+
+TP/1.1 200 OK
+Content-Type: text/csv; charset=utf-8
+Date: Fri, 23 Jan 2026 19:27:57 GMT
+Server: Kestrel
+Cache-Control: public,max-age=60
+Transfer-Encoding: chunked
+Vary: Accept-Encoding
+X-Debug: StudentsController-GetAll
+
+id,name,matrikelnummer,semester
+1,Max Mustermann,123456,3
+2,Lisa Müller,654321,1
+
+der CSV-Export ermöglicht eine einfache Weiterverarbeitung der Daten und(z.B in Excel)
+---
+### Dokumentation der unterstützen Media Types (OpenAPI)
+Die unterstützten Media Types werden im Web Service über das [Produces]-Attribut an den Endpunkten definiert und sind dadurch automatisch in der OpenAPI-/Swagger-Dokumentation sichtbar.
+
+[Produces("application/json", "application/xml", "text/csv")]
+
+Unterstütze Media Types:
+  application/json (standardformat)
+  application/xml
+  text/csv(Custom Output Formatter)
+  
+Voteile  den Content Negotiation sind:
+  Ein Endpoint kann mehrere Response-Formate bereitstellen
+  Hohe Flexibilität für unterschiedliche Clients
+  Keine redundaten Endpunkte notwendig
+
+Nachteile den Content Negotiation sind:
+  Höherer Implementierungs- und Testaufwand
+  Koplexität bei fFormatierung und Debugging
+  Clients müssen korekt  Accept-Header senden
+
+---
 ## ERWEITERTE AUFGABE 2: RESILIANCE & PERFORMANCE PATTERNS 
 ---
 (Bearbeitet von: Neven Lazic)
@@ -331,7 +429,7 @@ curl -w "\nTime: %{time_total}\n" -o /dev/null -s http://localhost:5187/api/stud
 Time: 0.013725
 Time: 0.006718
 
----------------------------
+---
 ## Pagination 
 ### Implementierung: Skip/Take mit Query-Parametern
 
@@ -381,8 +479,8 @@ Vary: Accept-Encoding
 
 
 
----------------------------
-## Retry-Pattern (3 Punkte)
+---
+## Retry-Pattern 
 
 ### Ziel
 Bei externen Service-Calls treten in verteilten Systemen häufig **transiente Fehler** auf (kurzzeitige Netzwerkprobleme, Timeouts, kurzzeitige Nichtverfügbarkeit).  

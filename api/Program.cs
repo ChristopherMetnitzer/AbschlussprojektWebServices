@@ -1,10 +1,19 @@
 using Abschlussprojekt.Services;
 using Polly;
 using Polly.Retry;
+using Abschlussprojekt.Formatters;
+
 var builder = WebApplication.CreateBuilder(args);
 
+
 // 1. Controller hinzufügen
-builder.Services.AddControllers();
+builder.Services.AddControllers(
+    options =>
+    {
+        options.OutputFormatters.Add(new CsvOutputFormatter());
+    }
+)
+    .AddXmlSerializerFormatters(); // XML-Formatter hinzufügen
 
 // Response Caching-Middleware hinzufügen
 builder.Services.AddResponseCaching(options =>

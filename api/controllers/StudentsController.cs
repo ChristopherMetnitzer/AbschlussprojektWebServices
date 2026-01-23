@@ -27,8 +27,9 @@ namespace Abschlussprojekt.Controllers
         }
 
         // --- READ (Alle lesen) ---
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet("export")]
+        [Produces("text/csv", "application/json", "application/xml")]  // XML-Formatierung unterstützen
+        public IActionResult Export()
         {
             // Erweiterte Aufgabe 2: Response Caching-Header setzen
             Response.Headers["X-Debug"] = "StudentsController-GetAll";
@@ -39,7 +40,11 @@ namespace Abschlussprojekt.Controllers
             var students = _service.GetAll();
             
             // Wir geben die Liste und den Uni-Namen zurück
-            return Ok(new { University = uniName, Data = students });
+            //return Ok(new { University = uniName, Data = students });
+            return Ok(students);
+
+            
+
         }
 
         [HttpGet("paged")]
@@ -74,7 +79,9 @@ namespace Abschlussprojekt.Controllers
 
 
         // --- READ (Einen lesen) ---
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
+        [Produces("application/json", "application/xml")]   // XML-Formatierung unterstützen
+
         public IActionResult GetById(int id)
         {
             Response.Headers["Cache-Control"] = "public,max-age=60"; // Demo/Nachweis
