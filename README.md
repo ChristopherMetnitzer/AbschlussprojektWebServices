@@ -40,41 +40,104 @@ Um das gesamte Projekt (Backend API und Client) ohne manuelle Installation von A
 ---
 (Bearbeitet von: Christopher Metnitzer)
 
-Der "StudentsController" ist die zentrale REST-Schnittstelle. Es sind CRUD-Operationen (Create, Read, Update, Delete) implementiert und nutzt das HTTP-Protokoll korrekt aus.
+Der "StudentsController" stellt die zentrale REST-Schnittstelle dar. 
+Er implementiert vollständige CRUD-Operationen (Create, Read, Update, Delete) 
+und nutzt die Semantik des HTTP-Protokolls korrekt aus.
 
 Implementierte Endpunkte und HTTP-Verben:
 
-GET (Lesen)
+1. GET (Read) - Safe Method
+   - Route: /api/students
+     Funktion: Liefert eine Liste aller Studenten.
+     Status: 200 OK.
+   
+   - Route: /api/students/{id}
+     Funktion: Liefert einen spezifischen Studenten.
+     Status: 200 OK (gefunden) oder 404 Not Found (wenn ID ungültig).
 
-- /api/students Funktion liefert alle Studenten in einer Liste. 
-Status: 200 OK.
+2. POST (Create)
+   - Route: /api/students
+     Funktion: Erstellt eine neue Ressource.
+     Status: 201 Created. 
+     Besonderheit: Es wird der Standard "CreatedAtAction" verwendet, 
+     um im HTTP-Header "Location" die URL zur neu erstellten Ressource 
+     zurückzugeben.
 
-- /api/students/{id} liefert einen Studenten, bei dem die id die übergebene ist. 
-Status: 200 OK (Der Student wurde gefunden) oder 404 Not Found (Student wurde nicht gefunden).
+3. PUT (Update) - Idempotent
+   - Route: /api/students/{id}
+     Funktion: Überschreibt einen existierenden Datensatz vollständig.
+     Status: 204 No Content (Erfolg ohne Body) oder 400 Bad Request 
+     (Validierungsfehler).
 
-POST (Erstellen)
-
-- Route: /api/students erstellt eine neue Ressource. 
-Status: 201 Created (Der Student wurde erfolgreich erstellt)
-
-PUT (Überschreiben)
-
-- /api/students/{id} überschreibt den Datensatz mit der gewählten id komplett. 
-Status: 204 No Content (Erfolg ohne Body) oder 400 Bad Request (Validierungsfehler).
-
-DELETE (Löschen)
-
-- Route: /api/students/{id} löscht den gesamten Datensatz vom Student mit dieser id.
-Status: 204 No Content (Erfolg) oder 404 Not Found (wenn es die id nicht gibt).
+4. DELETE (Delete)
+   - Route: /api/students/{id}
+     Funktion: Entfernt einen Datensatz.
+     Status: 204 No Content (Erfolg) oder 404 Not Found.
 
 
 ---
 
 ## AUFGABE 3: ASYNCHRONES MESSAGING & LOGGING
 ---
-(Bearbeitet von: [PLATZHALTER NAME])
+(Bearbeitet von: Neveen Lazic)
 
-[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
+Im Student-Administration-Microservice werden asynchrones Messaging und Logging
+zur Verbesserung von Nachvollziehbarkeit, Entkopplung und Erweiterbarkeit eingesetzt.
+
+### Asynchrones Messaging
+
+Nach ausgewählten CRUD-Operationen (`Create`, `Delete`) werden **Domain-Events**
+(z. B. `StudentCreated`, `StudentDeleted`) erzeugt und in eine **In-Memory-Queue**
+eingereiht.  
+Diese Events werden **nicht innerhalb des HTTP-Requests**, sondern asynchron
+durch einen `BackgroundService` verarbeitet.
+
+Die Implementierung erfolgt bewusst einfach über eine In-Memory-Queue,
+da kein externer Message Broker erforderlich ist und der Fokus auf dem
+Architekturprinzip liegt.
+
+**Vorteile:**
+- Entkopplung von Request-Verarbeitung und Folgeaktionen
+- Schnelle API-Antwortzeiten
+- Leicht erweiterbar (z. B. RabbitMQ, Kafka)
+
+---
+
+### Logging
+
+Für das Logging wird das integrierte Logging-Framework von ASP.NET Core verwendet.
+Es werden geloggt:
+- erfolgreiche CRUD-Operationen im Controller
+- asynchrone Event-Verarbeitung im Background Worker
+- Fehlerfälle (z. B. ungültige IDs)
+
+Die Log-Ausgaben erfolgen über die Konsole und sind sowohl lokal als auch
+in Docker-Containern einsehbar.
+
+---
+
+### Nachweis
+
+Beim Erstellen und Löschen eines Studenten erscheinen folgende Log-Einträge:
+
+                                                                      
+-api-1     | info: Abschlussprojekt.Controllers.StudentsController[0]
+api-1     |       Student CREATED: 4
+api-1     | info: StudentEventWorker[0]
+api-1     | info: Abschlussprojekt.Controllers.StudentsController[0]
+api-1     |       Student CREATED: 4
+api-1     | info: StudentEventWorker[0]
+api-1     |       ASYNC EVENT: StudentCreated | StudentId=4 | 01/21/2026 16:36:39
+api-1     | info: StudentEventWorker[0]
+api-1     |       ASYNC EVENT: StudentCreated | StudentId=4 | 01/21/2026 16:36:39
+api-1     |       ASYNC EVENT: StudentCreated | StudentId=4 | 01/21/2026 16:36:39
+api-1     | info: Abschlussprojekt.Controllers.StudentsController[0]
+api-1     |       Student DELETED: 4
+api-1     | info: StudentEventWorker[0]
+api-1     |       ASYNC EVENT: StudentDeleted | StudentId=4 | 01/21/2026 16:37:06 
+
+Damit ist nachgewiesen, dass Logging und asynchrones Messaging korrekt
+implementiert sind.
 
 
 ## AUFGABE 4: OPENAPI SPEZIFIKATION
@@ -88,19 +151,28 @@ Status: 204 No Content (Erfolg) oder 404 Not Found (wenn es die id nicht gibt).
 ---
 (Bearbeitet von: Christopher Metnitzer)
 
-Um den Code und die Softwarearchitektur sauber zu machen ("Separation of Concerns"), wurde Fokus darauf gelegt, dass keine Logik im Controller implementiert wird. Es wurde anstatt dessen das Service Pattern verwendet.
+Um die Architektur sauber zu halten ("Separation of Concerns"), wurde 
+keine Logik im Controller implementiert. Stattdessen kommt das 
+Service-Pattern zum Einsatz.
 
-Komponenten:
-1. IStudentService (Interface): Legt fest, wie der StudentService aufgebaut ist und erlaubt das Testen.
-2. StudentService (Implementierung): Logik und Datenhaltung sind hier definiert.
+Architektur-Komponenten:
+1. IStudentService (Interface): Definiert den Vertrag und ermöglicht 
+   Mocking/Testing.
+2. StudentService (Implementation): Beinhaltet die Geschäftslogik und 
+   die Datenhaltung (In-Memory Liste).
 
-Dependency Injection:
-Im Program.cs wird mittels "builder.Services.AddSingleton<IStudentService, StudentService>();" registriert.
+Dependency Injection (DI) Strategie:
+Die Registrierung erfolgt in der Program.cs mittels:
+"builder.Services.AddSingleton<IStudentService, StudentService>();"
 
-Warum wurde Singleton gewählt:
-Weil wir in diesem Projekt keine persistente Datenbank, sondern eine Liste verwenden, ist es unbedingt nötig sicher zu sein, dass es nur eine Version dieser Liste zu jedem Zeitpunkt geben kann.
-- Würde ich "AddScoped" oder "AddTransient" verwenden, würde bei jedem HTTP-Request eine neue Liste erstellt werden. Damit würde ich automatisch alle Daten verlierden.
-- Mit "AddSingleton" ist sicher, dass dieselbe Instanz (und damit die Daten) verfügbar sind und bleiben solange die Applikation läuft.
+Begründung der Scope-Wahl "Singleton":
+Da in diesem Projekt keine persistente Datenbank (wie SQL) verwendet wird, 
+sondern die Daten zur Laufzeit in einer List<Student> im Arbeitsspeicher 
+liegen, ist "Singleton" zwingend erforderlich.
+- Bei "AddScoped" oder "AddTransient" würde bei jedem HTTP-Request eine 
+  neue, leere Liste erstellt werden. Daten wären sofort verloren.
+- "AddSingleton" garantiert, dass dieselbe Instanz (und damit die Daten) 
+  über die gesamte Laufzeit der Applikation verfügbar bleiben.
 
 ---
 
@@ -132,46 +204,23 @@ Christopher im Backend bereits implementiert. Custom Routes fehlen noch.)
 ---
 (Bearbeitet von: Christopher Metnitzer)
 
-REST (Representational State Transfer) hat insgesamt sechs Einschränkungen (Constraints), die vom System erfüllt werden müssen:
 
-1. Client-Server-Architektur
-- Klare Trennung: Client macht UI, Server macht Daten und Logik
-2. Statelessness (Zustandslosigkeit)
-- Server speichert keine Daten über User-Sessions, Anfragen sind unabhängig.
-3. Cacheability (Pufferspeicherbarkeit)
-- Server sagt Client, was und wie lange es gecached werden soll
-4. Layered System (Mehrschichtiges System)
-- Der Client weiß nicht ob er mit dem Server, Proxy oder LoadBalancer spricht
-5. Code on Demand (optional)
-- Server kann Code an Client schicken, den dieser ausführt
-6. Uniform Interface (Einheitliche Schnittstelle)
-- Standardisierte Kommunikation durch eindeutige Adressen und feste Methoden
+Der Service wurde strikt nach den Design-Prinzipien von Roy Fielding (REST) 
+entwickelt. Besonders hervorzuheben sind:
 
-In meiner Implementierung des Student Administration Microservice waren folgende Prinzipien davon besonders leitend:
+A) Statelessness (Zustandslosigkeit)
+Der Server speichert keinen Client-Kontext (Session State) zwischen zwei 
+Anfragen. Jeder Request (z.B. GET /api/students/1) enthält alle Informationen, 
+die zur Verarbeitung notwendig sind.
+Vorteil: Der Service ist beliebig horizontal skalierbar, da keine Session-
+Affinität benötigt wird.
 
-##### A) Statelessness (Zustandslosigkeit)
-
-Theorie:
-Vom Server aus werden keine Daten vom Client zwischen einzelnen HTTP Anfragen gespeichert.
-Demnach muss jede Anfrage ohne Extrainformationen alle Infos haben, die zur Verarbeitung der Daten notwendig sind!
-
-Es wurde folgendermaßen umgesetzt:
-Ich habe im "StudentsController" KEINE Form von Session-Speicher implementiert. Jede Methode die aufgerufen wird ist vollständig alleine und ohne extra Daten funktionsfähig.
-- Der Beweis hierfür ist, dass der Controller bei einem Update zwingend die ID in der URL und das Objekt im Body benötigt, weil er sich nicht auf vorherige Eingaben verlassen kann oder sollte.
-
-##### B) Uniform Interface (Einheitliche Schnittstelle)
-
-Theorie:
-Wenn ein Client mit einem Server kommuniziert, muss diese Kommunikation/Interaktion über eine standardisierte Schnittstelle passieren. Dadurch wird sichergestellt, dass die Komponenten voneinander unabhängig/entkoppelt sind.
-
-Es wurde folgendermaßen umgesetzt:
-Es werden ressourcen-basierte URIs und Standard-HTTP-Methoden verwendet.
-- Ressourcen: Die URI "/api/students" repräsentiert die Liste an Studenten.
-- Verben: Anstatt Aktionen in der URL zu kodieren (kein "/createStudent"), nutze ich HTTP-Verben, so wie sie eigentlich gedacht sind:
-    * GET zum Lesen
-    * POST zum Erstellen
-    * DELETE zum Löschen
-- Status Codes: Der Server antwortet mit standardisierten Codes (HTTP Codes wie: 200, 201, 204) damit jede Form von Client die Antwort sofort versteht.
+B) Uniform Interface (Einheitliche Schnittstelle)
+Die API ist ressourcen-orientiert aufgebaut. Die URIs enthalten Nomen 
+(/api/students), keine Verben (/api/createStudent). Die Manipulation 
+der Ressourcen erfolgt ausschließlich über die standardisierten HTTP-Verben 
+(GET, POST, PUT, DELETE), was die Schnittstelle für Entwickler intuitiv 
+nutzbar macht.
 
 ---
 
@@ -181,8 +230,7 @@ Es werden ressourcen-basierte URIs und Standard-HTTP-Methoden verwendet.
 Um Hardcoding im Quellcode zu vermeiden ("Configuration over Code"), 
 wurden variable Parameter in die Konfigurationsdatei ausgelagert.
 
-##### Struktur in appsettings.json:
-
+Struktur in appsettings.json:
 "UniversitySettings": {
   "Name": "FH Campus02 Business Analytics & AI",
   "Semester": "Wintersemester 2025/2026",
@@ -190,8 +238,10 @@ wurden variable Parameter in die Konfigurationsdatei ausgelagert.
 }
 
 Implementierung:
-Die Werte werden über das Interface "IConfiguration" über DI in den Controller geladen. 
-Dadurch wird es möglich, Umgebungsvariablen (z.B. Semester) zu ändern, ohne den Code neu zu kompilieren und deployen.
+Die Werte werden über das Interface "IConfiguration" mittels Dependency 
+Injection in den Controller geladen. Dies ermöglicht es, Umgebungsvariablen 
+(z.B. Semester) zu ändern, ohne den Code neu kompilieren und deployen 
+zu müssen.
 
 ---
 
@@ -244,4 +294,79 @@ Siehe 1. Punkt: Anwendung
 (Bearbeitet von: Thomas Proksch)
 
 
-Todo
+
+## ERWEITERTE AUFGABE 1: CONTENT NEGOTIATION
+---
+(Bearbeitet von: Thomas Proksch)
+
+## ERWEITERTE AUFGABE 2: RESILIANCE & PERFORMANCE PATTERNS 
+---
+(Bearbeitet von: Thomas Proksch)
+
+## ERWEITERTE AUFGABE 3: LOAD BALANCING & SKALIERUNG
+---
+(Bearbeitet von: Neven Lazic)
+
+### Mehrere Instanzen (Horizontale Skalierung)
+Der Student-Microservice wurde parallel auf mehreren Ports gestartet.
+Die gleichzeitige Ausführung der Instanzen ist anhand der laufenden Prozesse
+in mehreren Terminal-Fenstern ersichtlich (Ports 5187, 5188, 5189).
+
+### Monitoring / Status – `/info` Endpoint
+Der `/info`-Endpoint liefert den Port sowie einen UTC-Timestamp der aktuell
+antwortenden Instanz. Dadurch kann eindeutig festgestellt werden, welche
+Instanz eine Anfrage verarbeitet hat.
+
+{"instanceId":"aedc5a228c3d494fab49974d0ced0078","port":5187,"timestampUtc":"2026-01-23T11:47:44.581562Z"}
+{"instanceId":"9034bd99b50f4b5ca89c08448368f831","port":5189,"timestampUtc":"2026-01-23T11:47:51.3534882Z"}
+{"instanceId":"3bb02861a8a042abb9b55ba2458d9289","port":5188,"timestampUtc":"2026-01-23T11:47:57.3334185Z"}
+
+### Client-seitiges Load Balancing (Round-Robin)
+Im Client wird ein Round-Robin-Mechanismus verwendet, der Requests zyklisch
+auf eine Liste von Service-URLs verteilt. Die Auswahl der Instanz erfolgt
+über einen Modulo-Operator.
+
+In der Browser-Konsole ist sichtbar, dass aufeinanderfolgende Requests
+abwechselnd an unterschiedliche Ports (5187, 5188, 5189) gesendet werden.
+
+ROUND-ROBIN HIT:
+{instanceId: 'd933a48bf99f4ae490da4071391dc49d', port: 5188, timest
+ampUtc: '2026-01-21T17:14:57.7721023Z'}
+ROUND-ROBIN HIT:
+{instanceId: '5e1aa0e6dc3f42e9a943df31f193efbd', port: 5189, timest
+ampUtc: '2026-01-21T17:14:57.794721Z'}
+ROUND-ROBIN HIT:
+{instanceId: 74027a511fdb4069ae207ba942f13edd',
+ampUtc: '2026-01-21T17:14:57.8430499Z'}
+
+### Bonus: Simulation eines Instanzausfalls
+Der Ausfall einer Instanz wurde simuliert, indem der Prozess einer laufenden
+Instanz (Port 5187) manuell beendet wurde. Der Client erkennt den Ausfall
+(`INSTANCE DOWN`) und sendet weiterhin Requests an die verbleibenden Instanzen,
+die erfolgreich beantwortet werden.
+
+ROUND-ROBIN HIT:
+{instanceId: '5e1aa0e6dc3f42e9a943df31f193efbd', port: 5189, timest
+ampUtc: '2026-01-21T17:15:23.6401806Z '}
+
+ROUND-ROBIN HIT:
+{instanceId: 'd933a48bf99f4ae490da4071391dc49d', port: 5188, timest
+ampUtc: '2026-01-21T17:15:24.657129Z'}
+
+INSTANCE DOWN: http://localhost: 5187
+### Sticky Sessions vs. Distributed Cache
+
+**Sticky Sessions**
+Bei Sticky Sessions wird ein Client dauerhaft an eine bestimmte Service-Instanz
+gebunden. Dadurch verbleibt der Session-Zustand im Speicher dieser Instanz.
+Dies vereinfacht die Implementierung, schränkt jedoch die Skalierbarkeit ein
+und erhöht das Ausfallrisiko.
+
+**Distributed Cache**
+Bei einem Distributed Cache (z. B. Redis) wird der Zustand zentral gespeichert.
+Alle Service-Instanzen können auf diesen Zustand zugreifen, was horizontale
+Skalierung und Ausfallsicherheit ermöglicht, jedoch zusätzliche Infrastruktur
+und Komplexität erfordert.
+
+Im vorliegenden Projekt wird bewusst auf Sessions verzichtet und ein stateless
+Ansatz verfolgt.
