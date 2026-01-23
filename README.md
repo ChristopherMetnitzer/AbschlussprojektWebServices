@@ -325,11 +325,12 @@ Zur Demonstation wurde ein Demo-Endpunkt verwendet, der eine teure Operation sim
 Bei wiederholte Request innerhalb der Cache-Dauer ist die Antwortzeit reduziert
 
 curl -w "\nTime: %{time_total}\n" -o /dev/null -s http://localhost:5187/api/students/cache-demo
+
 curl -w "\nTime: %{time_total}\n" -o /dev/null -s http://localhost:5187/api/students/cache-demo
 
 Time: 0.013725
-
 Time: 0.006718
+
 ---------------------------
 ## Pagination 
 ### Implementierung: Skip/Take mit Query-Parametern
