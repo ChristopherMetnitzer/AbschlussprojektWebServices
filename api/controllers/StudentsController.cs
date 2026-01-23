@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Abschlussprojekt.Services;
 using Abschlussprojekt.Models;
+using System.Linq;
 
 
 namespace Abschlussprojekt.Controllers
@@ -29,17 +30,54 @@ namespace Abschlussprojekt.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
+            // Erweiterte Aufgabe 2: Response Caching-Header setzen
+            Response.Headers["X-Debug"] = "StudentsController-GetAll";
+            Response.Headers["Cache-Control"] = "public,max-age=60";
+
             // Aufgabe 9: Config auslesen
-            string uniName = _config["UniversitySettings:Name"];            var students = _service.GetAll();
+            string uniName = _config["UniversitySettings:Name"];            
+            var students = _service.GetAll();
             
             // Wir geben die Liste und den Uni-Namen zurück
             return Ok(new { University = uniName, Data = students });
         }
 
+        [HttpGet("paged")]
+        public IActionResult GetPaged([FromQuery]int pageNumber = 1, [FromQuery]int pageSize = 10)
+        {
+            pageNumber = Math.Max(pageNumber, 1);
+            pageSize = Math.Clamp(pageSize, 1, 100);
+
+            
+            string uniName = _config["UniversitySettings:Name"];
+            var allStudents = _service.GetAll();
+
+            int totalCount = allStudents.Count();
+
+            var items = allStudents
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+                return Ok(new 
+                { 
+                    University = uniName, 
+                    PageNumber = pageNumber, 
+                    PageSize = pageSize, 
+                    TotalCount = totalCount, 
+                    Items = items 
+                });
+
+
+
+        }
+
+
         // --- READ (Einen lesen) ---
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
+            Response.Headers["Cache-Control"] = "public,max-age=60"; // Demo/Nachweis
             var student = _service.GetById(id);
             if (student == null) return NotFound(); // 404
             return Ok(student); // 200

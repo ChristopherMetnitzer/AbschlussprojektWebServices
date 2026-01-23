@@ -301,7 +301,120 @@ Siehe 1. Punkt: Anwendung
 
 ## ERWEITERTE AUFGABE 2: RESILIANCE & PERFORMANCE PATTERNS 
 ---
-(Bearbeitet von: Thomas Proksch)
+(Bearbeitet von: Neven Lazic)
+
+In dieser Aufgabe wurden Performance- und Resilience-Patterns implementiert,
+um die Robustheit, Skalierbarkeit und Effizienz des Student-Microservices
+in einem verteilten System zu verbessern.
+
+### Response Caching
+Der GET-Endpunkt '/api/stdents' liefert einen 'Cache-Contol' Header, wo dir Response für Clients/Proxies cachebar ist.
+ curl -i http://localhost:5187/api/students
+
+TP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Fri, 23 Jan 2026 13:36:13 GMT
+Server: Kestrel
+Cache-Control: public,max-age=60
+Transfer-Encoding: chunked
+Vary: Accept-Encoding
+X-Debug: StudentsController-GetAll
+
+### Nachweis: Unterschied in der Response-Zeit
+Zur Demonstation wurde ein Demo-Endpunkt verwendet, der eine teure Operation simuliert.
+Bei wiederholte Request innerhalb der Cache-Dauer ist die Antwortzeit reduziert
+
+curl -w "\nTime: %{time_total}\n" -o /dev/null -s http://localhost:5187/api/students/cache-demo
+curl -w "\nTime: %{time_total}\n" -o /dev/null -s http://localhost:5187/api/students/cache-demo
+
+Time: 0.013725
+
+Time: 0.006718
+---------------------------
+## Pagination 
+### Implementierung: Skip/Take mit Query-Parametern
+
+Es wurde ein eigener Endpunkt implementiert:
+
+- **GET** `/api/students/paged?pageNumber=1&pageSize=10`
+
+Dabei werden die Parameter wie folgt verwendet:
+- `pageNumber` = aktuelle Seite (startet bei 1)
+- `pageSize` = Anzahl der Elemente pro Seite
+
+Die eigentliche Pagination erfolgt über:
+
+- `Skip((pageNumber - 1) * pageSize)`
+- `Take(pageSize)`
+
+---
+
+### Metadaten in der Response
+
+Zusätzlich zur paginierten Ergebnisliste werden Metadaten zurückgegeben:
+
+- `TotalCount` (Gesamtanzahl Datensätze)
+- `PageNumber`
+- `PageSize`
+
+Dadurch kann der Client die Anzahl der Seiten berechnen und korrekt navigieren.
+
+---
+
+### Nachweis (curl)
+
+**Request:**
+ bash
+curl -i "http://localhost:5187/api/students/paged?pageNumber=1&pageSize=1"
+
+TP/1.1 200 OK
+tContent-Type: application/json; charset=utf-8
+Date: Fri, 23 Jan 2026 13:53:52 GMT
+eServer: Kestrel
+Cache-Control: public, max-age=10
+Transfer-Encoding: chunked
+Vary: Accept-Encoding
+{"university":"FH Campus02","pageNumber":1,"pageSize":1,"totalCount":2,"items":[
+{"id":1,"name":"Max Mustermann","matrikelnummer":"123456","semester":3,"university":null}]}
+
+
+
+
+---------------------------
+## Retry-Pattern (3 Punkte)
+
+### Ziel
+Bei externen Service-Calls treten in verteilten Systemen häufig **transiente Fehler** auf (kurzzeitige Netzwerkprobleme, Timeouts, kurzzeitige Nichtverfügbarkeit).  
+Durch ein **Retry-Pattern** werden solche temporären Fehler abgefangen, indem der Request kontrolliert erneut ausgeführt wird.
+in ExternalUnbsableService.cs ist den dervice instabil implemetier und hat eine Fehlerquate von 50%
+
+### Retry mit Polly
+In Program.cs wird eine Polly Retry-Policy registriert
+Es wird maximal 3 Widerholungen durchgeführt
+und Backoff ist implemetiert der verhindert Request-Spikes bei AUsfällen
+
+curl -i http://localhost:5187/api/external/data
+TP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Date: Fri, 23 Jan 2026 15:34:15 GMT
+Server: Kestrel
+Cache-Control: public, max-age=10
+Transfer-Encoding: chunked
+Vary: Accept-Encoding
+{"data":"External service data","attempts":3}
+
+api-1 Attempt 1 to call external service.
+api-1 info: Abschlussprojekt.Controllers.ExternalController[0]
+api-1 Attempt 2 to call external service.
+api-1 info: Abschlussprojekt.Controllers.ExternalController[0]
+api-1 Attempt 3 to call external service.
+
+In verteilte Systeme sind diese Patterns wichtig weil:
+  -Externe Abängigkeit(APIs, Services,Netzwerk) sind nicht zuverlässsig- kurze Ausfälle sind normal.
+  -Viele Fehler loösen sich von selbst.
+  -Retry erhöht die Robustheit.
+  -Begrentze Retries + Backoff verhindern, dass ein Ausfall durch zu viele Wiederholungen noch versärkt wird
+
 
 ## ERWEITERTE AUFGABE 3: LOAD BALANCING & SKALIERUNG
 ---

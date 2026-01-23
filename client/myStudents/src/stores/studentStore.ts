@@ -3,13 +3,14 @@ import Student from '@/types/Student'
 import axios from 'axios'
 
 
+
 //Load balancer implemenierren 
 const SERVICE_URLS = [
   "http://localhost:5187",
   "http://localhost:5188",
   "http://localhost:5189",
 ];
-
+// Round-Robin Counter
 let rrCounter = 0;
 
 function pickServiceUrl() {
@@ -20,7 +21,7 @@ function pickServiceUrl() {
 
 
 
-
+// Pinia Store für Studenten
 export const useStudentStore = defineStore('student', {
     state: () => ({
         students: [] as Student[],
@@ -29,7 +30,7 @@ export const useStudentStore = defineStore('student', {
         error: null as string | null
     }),
 
-
+// Aktionen für API-Aufrufe
 
 actions: {
     async getStudents() {
@@ -76,7 +77,7 @@ actions: {
         this.loading = false;
       }
     },
-
+// Get student by ID
     async getStudentById(id: number) {
       this.loading = true;
       this.error = null;
@@ -139,18 +140,19 @@ actions: {
             this.loading = false;
         }
     },
-async testRoundRobin(times = 9) {
-  for (let i = 0; i < times; i++) {
-    const baseURL = pickServiceUrl();
-    try {
-      const info = await axios.get('/info', { baseURL, timeout: 1000 });
-      console.log("ROUND-ROBIN HIT:", info.data);
-    } catch (e) {
-      console.warn("INSTANCE DOWN:", baseURL);
-      i--; // optional: damit trotzdem times erfolgreiche Hits kommen
+    // Test-Methode für Round-Robin Load Balancing
+    async testRoundRobin(times = 9) {
+    for (let i = 0; i < times; i++) {
+        const baseURL = pickServiceUrl();
+        try {
+        const info = await axios.get('/info', { baseURL, timeout: 1000 });
+        console.log("ROUND-ROBIN HIT:", info.data);
+        } catch (e) {
+        console.warn("INSTANCE DOWN:", baseURL);
+        i--; 
+        }
     }
-  }
-}
+    }
 
 
   }
