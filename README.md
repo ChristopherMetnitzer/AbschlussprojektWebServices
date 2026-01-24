@@ -286,11 +286,12 @@ Aufwand: ca. 3 Stunden
 
 MITGLIED 2: Thomas Proksch
 ------------------------------
-Aufgabenbereich: Client
-Aufgabe 6
+Aufgabenbereich: Client + Authentifizierung
+Aufgabe 6 + 12
 Aufwand:
-Docker: ca 0.5 Std
-Client: ca 1,5 Std
+            - Docker: ca 0.5 Std
+            - Aufgabe 6: ca 2 Std
+            - Aufgabe 12: ca 3 Std
 
 
 MITGLIED 3: Neven Lazic
