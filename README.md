@@ -227,6 +227,101 @@ Aufwand: [PLATZHALTER]
 ## AUFGABE 12: AUTHENTIFIZIERUNG & SECURITY
 ---
 (Bearbeitet von: [PLATZHALTER NAME])
+---
+
+### Arten der Authentifizierung im Web
+
+#### API-Key
+
+##### Definition
+
+Mittels API Keys ist es möglich API-Nutzer zu identifizieren bzw. die API-Anfrage zu verifizieren, ohne den tatsächlichen Nutzer zu kennen. 
+Dazu wird der API-Key mit jeder API-Anfrage mitgesendet und die Applikation autorisiert den Zugriff, oder lehnt den Zugriff ab.
+Wie der API-Key übermittelt wird unterscheidet sich je nach API.
+
+Möglichkeiten zur Übermittlung sind zB:
+
+- Query Parameter
+
+- API-Header
+
+- API-Body
+
+##### Vorteil von API-Keys
+
+- Einfach zu implementieren
 
 
-[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
+##### Nachteil von API-Keys
+
+- Nutzer des API-Keys unbekannt
+
+- Kann geleakt werden
+
+##### Anwendung
+
+API-Keys funktionieren wenn du eine Applikation authentifizierst, die dein Service nutzen möchte. Außerdem eignen sich API-Keys gut zur Monetarisierung eines Services und du die Häufigkeit der API-Anfragen regeln möchtest.
+
+---
+
+#### HTTP Basic Auth
+
+##### Definition
+
+HTTP Basic Auth ist eine einfache Möglichkeit einen User zu identifizieren. Dabei wird der Username und das Userpasswort kodiert und als Header in **jeder** HTTP-Anfrage mitgesendet.
+Die kodierte Useridentifikation wird dabei ähnlich wie ein API-Key genutzt.
+
+##### Vorteil
+
+- Standardisierter Weg seine Berechtigung zu übermitteln
+
+- Der HTTP-Header ist immer gleich
+
+- Leichte Implementierung
+
+##### Nachteil
+
+- Die App muss das Userpasswort kennen
+
+- Intransparente Passwortnutzung seitens der App möglich
+
+- Die App hat Vollzugriff auf das Benutzerkonto
+
+- Keine Zwei-Faktor-Authentifizierung möglich
+
+
+##### Anwendung
+
+HTTP-Auth ist eine einfache Möglichkeit zur Identifikation von Nutzern. Diese Methode sollte nur dann angewandt werden, wenn Sicherheit kein Risiko darstellt. Auf Grund des Sicherheitsrisikos findet HTTP-Auth heute kaum noch eine Anwendung.
+
+---
+
+#### OAuth 2.0
+
+##### Definition
+
+OAuth 2.0 ist einen auf Token basierte Architektur. Der Token, den das Service und die Applikation zur Authentifizierung verwenden, wird dabei von einem Dritten, einem Authentifizierungsserver, erstellt. Mit diesem Protokoll können Applikationen, im Namen des Nutzers, nach Zugriff auf Services fragen. Zum Beispiel kann deine Healthapplikation auf dem Smartphone, nach deinen Fitnessdaten deiner Sportswatch fragen.
+
+###### Erstellung des Authentifizierungstokens
+
+0. Eine Applikation fragt User nach Zugriff auf ein Service
+1. Die Applikation macht eine Anfrage zur Erstellung eines Tokens an den Autorisations Server.
+2. Der Autorisations Service erlaubt einer Drittanwendung und der Token wird ausgetauscht.
+3. Applikation hat mit dem Token Zugriff auf das Service
+
+##### Vorteil
+
+- Sicherheit, Nutzerdaten bleiben geschützt
+- Geregelter Zugriff auf einzelne Services
+- Single Responsibility Prinzip
+- Zwei-Faktor-Authentifizierung möglich
+
+##### Nachteil
+
+- Komplexität
+- Single Point of Failure (Autorisierungsserver)
+- Tracking & Datenschutz
+
+##### Anwendung
+
+Wenn du in einer Zero Trust Umgebung (**Internet**) mit persönlichen Informationen arbeitest, solltest du auf eine Token basierte Authentifizierung zurückgreifen, die auch Zwei-Faktor-Authentifizierung ermöglicht und einen externen Autorisierungsserver nutzt.
