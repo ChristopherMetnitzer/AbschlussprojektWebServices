@@ -1,0 +1,24 @@
+# Git
+.git
+.gitignore
+
+# VS Code
+.vscode
+
+# Docker
+docker-compose.yaml
+.dockerignore
+
+# Build results
+bin/
+obj/
+*.db
+*.log
+
+# C# / User Specific
+*.user
+*.suo
+
+# Node.js
+client/myStudents/node_modules
+client/myStudents/dist

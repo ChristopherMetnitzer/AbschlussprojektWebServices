@@ -1,0 +1,43 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+logs/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.sln.docstates
+
+# .NET Core
+bin/
+obj/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# AppSettings (Secrets)
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# Node.js / Vue Client
+node_modules/
+dist/
+dist-ssr/
+coverage/
+*.local
+.eslintcache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+
+# Cypress / Vitest
+cypress/videos/
+cypress/screenshots/
+__screenshots__/

@@ -4,13 +4,13 @@ import axios from 'axios'
 
 
 
-//Load balancer implemenierren 
+// Load Balancer implementieren
 const SERVICE_URLS = [
   "http://localhost:5187",
   "http://localhost:5188",
   "http://localhost:5189",
 ];
-// Round-Robin Counter
+// Round-Robin Zähler
 let rrCounter = 0;
 
 function pickServiceUrl() {
@@ -39,7 +39,7 @@ actions: {
       try {
         const baseURL = pickServiceUrl();
         const response = await axios.get('/api/Students',{baseURL});
-        // Nachweis (optional): zeigt in der Console welche Instanz getroffen wurde
+        // Nachweis (optional): zeigt in der Konsole welche Instanz getroffen wurde
         const info = await axios.get('/info', { baseURL });
         console.log('ROUND-ROBIN HIT:', info.data);
 
@@ -50,11 +50,11 @@ actions: {
         if (Array.isArray(responseData)) {
             studentsList = responseData;
         } else if (responseData && Array.isArray(responseData.data)) {
-             // Lowercase 'data' (camelCase JSON default)
+             // Kleinbuchstaben 'data' (camelCase JSON Standard)
             studentsList = responseData.data;
             universityName = responseData.university || '';
         } else if (responseData && Array.isArray(responseData.Data)) {
-            // PascalCase 'Data' (if JSON serializer preserves casing)
+            // PascalCase 'Data' (falls der JSON-Serializer die Großschreibung beibehält)
             studentsList = responseData.Data;
             universityName = responseData.University || '';
         } else {
@@ -77,16 +77,16 @@ actions: {
         this.loading = false;
       }
     },
-// Get student by ID
+    // Student anhand der ID abrufen
     async getStudentById(id: number) {
       this.loading = true;
       this.error = null;
       try {
         const baseURL = pickServiceUrl();
-        const { data } = await axios.get<Student>(`/api/Students/${id}`);
+        const { data } = await axios.get<Student>(`/api/Students/${id}`, { baseURL });
         this.currentStudent = data;
       } catch (err: any) {
-        this.error = err.message || 'Failed to load student';
+        this.error = err.message || 'Laden des Studenten fehlgeschlagen';
         console.error(err);
       } finally {
         this.loading = false;
@@ -97,10 +97,24 @@ actions: {
         this.loading = true;
         try {
             const baseURL = pickServiceUrl();
-            const { data } = await axios.post<Student>('/api/Students', student, {baseURL});
+            // Zugriff auf den API-Schlüssel aus den Umgebungsvariablen (.env Datei)
+            // Vite stellt Env-Variablen über import.meta.env bereit
+            const apiKey = import.meta.env.VITE_API_KEY;
+
+            // Header-Konfiguration erstellen
+            const config = {
+                baseURL,
+                headers: {
+                    'X-API-KEY': apiKey
+                }
+            };
+            
+            const { data } = await axios.post<Student>('/api/Students', student, config);
             this.students.push(data);
-        } catch(error) {
-            console.error('Erstellen fehlgeschlagen!')
+        } catch(error: any) {
+            console.error('Erstellen fehlgeschlagen!', error);
+            this.error = error.message; // Fehler im State speichern
+            throw error; // WICHTIG: Fehler weiterwerfen, damit die UI ihn bemerkt!
         } finally {
             this.loading = false;
         }

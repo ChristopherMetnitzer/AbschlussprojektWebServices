@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Abschlussprojekt.Services;
 using Abschlussprojekt.Models;
+using Abschlussprojekt.Attributes;
 using System.Linq;
-
 
 namespace Abschlussprojekt.Controllers
 {
@@ -27,9 +27,10 @@ namespace Abschlussprojekt.Controllers
         }
 
         // --- READ (Alle lesen) ---
-        [HttpGet("export")]
+        [HttpGet] // Standard Route
+        [HttpGet("export")] // Alias fuer Export
         [Produces("text/csv", "application/json", "application/xml")]  // XML-Formatierung unterstützen
-        public IActionResult Export()
+        public IActionResult GetAll()
         {
             // Erweiterte Aufgabe 2: Response Caching-Header setzen
             Response.Headers["X-Debug"] = "StudentsController-GetAll";
@@ -92,6 +93,7 @@ namespace Abschlussprojekt.Controllers
 
         // --- CREATE (Erstellen) ---
         [HttpPost]
+        [ApiKey] // Nur diese Methode benötigt den API-Key
         public async Task<IActionResult> Create([FromBody] Student student)
         {
             _service.Create(student);

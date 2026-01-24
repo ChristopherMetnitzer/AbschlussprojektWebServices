@@ -47,7 +47,7 @@ builder.Services.AddSingleton<IStudentService, StudentService>();
 builder.Services.AddSingleton<IStudentEventQueue, InMemoryStudentEventQueue>();
 builder.Services.AddHostedService<StudentEventWorker>();
 
-// ExternalUnstableService mit Polly Retry Policy registrieren
+// ExternalUnstableService mit Polly-Retry-Richtlinie registrieren
 builder.Services.AddSingleton<ExternalUnstableService>();
 
 var retryPolicy = Policy
@@ -72,7 +72,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAll");
 app.UseResponseCaching();
-// Custom Middleware für Cache-Control Header
+// Benutzerdefinierte Middleware für Cache-Control-Header
 app.Use(async (context, next) =>
 {
     context.Response.GetTypedHeaders().CacheControl =
@@ -86,7 +86,6 @@ app.Use(async (context, next) =>
 
     await next();
 });
-app.MapGet("/info", () => $"Response from API instance on port {app.Urls.FirstOrDefault()?.Split(':').Last()}");
 
 // app.UseHttpsRedirection();
 app.UseAuthorization();
