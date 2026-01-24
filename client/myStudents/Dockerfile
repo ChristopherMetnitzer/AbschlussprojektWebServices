@@ -1,16 +1,16 @@
-FROM node:25-alpine3.22
+FROM node:22-alpine
 
 WORKDIR /app
 
-
 COPY package*.json ./
 
+# Alle Abhängigkeiten inklusive devDependencies installieren
 RUN npm install
 
 COPY . .
 
-# Expose the Vite port (default is usually 5173)
+# Den Vite-Port freigeben
 EXPOSE 5173
 
-# Start the dev server with host flag to be accessible outside container
+# Den Entwicklungsserver starten
 CMD ["npm", "run", "dev", "--", "--host"]

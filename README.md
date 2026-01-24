@@ -178,7 +178,6 @@ liegen, ist "Singleton" zwingend erforderlich.
 
 ## AUFGABE 6: CLIENT APPLIKATION
 (Bearbeitet von: Thomas Proksch)
-<<<<<<< HEAD
 
 ### Client-Architektur & API-Nutzung
 
@@ -213,16 +212,6 @@ Axios wird innerhalb der Store-Actions verwendet, um Requests an das .NET Backen
   - Konfiguration: Die Basis-URL der API wird aus den Umgebungsvariablen (import.meta.env.VITE_API_BASE_URL) geladen. Das macht den Wechsel zwischen Localhost und Produktion einfach.
   - Sicherheit (API Key):
   In der createStudent-Action wird Axios so konfiguriert, dass der API-Key im Header mitgeschickt wird.
-=======
-
-Client durch SPA realisiert.
-API Verwendung ist in studentStore.ts implementiert.
-In einer Tabellen Komponente werden die Daten der API dargestellt, bzw. gibt es die Möglichkeit einen Studenten zu ändern, zu löschen oder neu anzulegen.
-In App.vue ist die Komponente importiert.
-main.ts führt die ganze App aus. Außerdem ist hier die Adresse der API definiert (da es nur eine Adresse gibt)
-
-
->>>>>>> ec9b7020d70939bf3dc6658cf8d20aca6cdf42bd
 
 ---
 
@@ -426,7 +415,6 @@ OAuth 2.0 ist einen auf Token basierte Architektur. Der Token, den das Service u
 ##### Anwendung
 
 Wenn du in einer Zero Trust Umgebung (**Internet**) mit persönlichen Informationen arbeitest, solltest du auf eine Token basierte Authentifizierung zurückgreifen, die auch Zwei-Faktor-Authentifizierung ermöglicht und einen externen Autorisierungsserver nutzt.
-<<<<<<< HEAD
 
 ---
 
@@ -507,7 +495,7 @@ Sicherheit muss für den Nutzer einfach und verständlich sein. Wenn Sicherheits
 
 [^1]: [The Security Principles of Saltzer and Schroeder](https://shostack.org/blog/the-security-principles-of-saltzer-and-schroeder)
 
-=======
+
 (Bearbeitet von: Thomas Proksch)
 
 
@@ -800,4 +788,3 @@ und Komplexität erfordert.
 
 Im vorliegenden Projekt wird bewusst auf Sessions verzichtet und ein stateless
 Ansatz verfolgt.
->>>>>>> ec9b7020d70939bf3dc6658cf8d20aca6cdf42bd
