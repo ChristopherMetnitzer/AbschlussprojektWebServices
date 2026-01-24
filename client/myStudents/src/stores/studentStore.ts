@@ -68,10 +68,23 @@ actions: {
     async createStudent(student: Student) {
         this.loading = true;
         try {
-            const { data } = await axios.post<Student>('/api/Students', student);
+            // Zugriff auf den API-Schlüssel aus den Umgebungsvariablen (.env Datei)
+            // Vite stellt Env-Variablen über import.meta.env bereit
+            const apiKey = import.meta.env.VITE_API_KEY;
+
+            // Header-Konfiguration erstellen
+            const config = {
+                headers: {
+                    'X-API-KEY': apiKey
+                }
+            };
+            
+            const { data } = await axios.post<Student>('/api/Students', student, config);
             this.students.push(data);
-        } catch(error) {
-            console.error('Erstellen fehlgeschlagen!')
+        } catch(error: any) {
+            console.error('Erstellen fehlgeschlagen!', error);
+            this.error = error.message; // Fehler im State speichern
+            throw error; // WICHTIG: Fehler weiterwerfen, damit die UI ihn bemerkt!
         } finally {
             this.loading = false;
         }

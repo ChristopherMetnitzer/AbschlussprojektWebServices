@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Abschlussprojekt.Services;
 using Abschlussprojekt.Models;
+using Abschlussprojekt.Attributes;
 
 namespace Abschlussprojekt.Controllers
 {
@@ -40,6 +41,7 @@ namespace Abschlussprojekt.Controllers
 
         // --- CREATE (Erstellen) ---
         [HttpPost]
+        [ApiKey] // Nur diese Methode benötigt den API-Key
         public IActionResult Create([FromBody] Student student)
         {
             _service.Create(student);
