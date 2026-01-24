@@ -2,6 +2,26 @@ import { defineStore } from 'pinia'
 import Student from '@/types/Student'
 import axios from 'axios'
 
+
+
+//Load balancer implemenierren 
+const SERVICE_URLS = [
+  "http://localhost:5187",
+  "http://localhost:5188",
+  "http://localhost:5189",
+];
+// Round-Robin Counter
+let rrCounter = 0;
+
+function pickServiceUrl() {
+  const url = SERVICE_URLS[rrCounter % SERVICE_URLS.length];
+  rrCounter++;
+  return url;
+}
+
+
+
+// Pinia Store für Studenten
 export const useStudentStore = defineStore('student', {
     state: () => ({
         students: [] as Student[],
@@ -10,12 +30,19 @@ export const useStudentStore = defineStore('student', {
         error: null as string | null
     }),
 
+// Aktionen für API-Aufrufe
+
 actions: {
     async getStudents() {
       this.loading = true;
       this.error = null;
       try {
-        const response = await axios.get('/api/Students');
+        const baseURL = pickServiceUrl();
+        const response = await axios.get('/api/Students',{baseURL});
+        // Nachweis (optional): zeigt in der Console welche Instanz getroffen wurde
+        const info = await axios.get('/info', { baseURL });
+        console.log('ROUND-ROBIN HIT:', info.data);
+
         const responseData = response.data;
         let studentsList: Student[] = [];
         let universityName = '';
@@ -50,11 +77,12 @@ actions: {
         this.loading = false;
       }
     },
-
+// Get student by ID
     async getStudentById(id: number) {
       this.loading = true;
       this.error = null;
       try {
+        const baseURL = pickServiceUrl();
         const { data } = await axios.get<Student>(`/api/Students/${id}`);
         this.currentStudent = data;
       } catch (err: any) {
@@ -68,6 +96,7 @@ actions: {
     async createStudent(student: Student) {
         this.loading = true;
         try {
+<<<<<<< HEAD
             // Zugriff auf den API-Schlüssel aus den Umgebungsvariablen (.env Datei)
             // Vite stellt Env-Variablen über import.meta.env bereit
             const apiKey = import.meta.env.VITE_API_KEY;
@@ -80,6 +109,10 @@ actions: {
             };
             
             const { data } = await axios.post<Student>('/api/Students', student, config);
+=======
+            const baseURL = pickServiceUrl();
+            const { data } = await axios.post<Student>('/api/Students', student, {baseURL});
+>>>>>>> ec9b7020d70939bf3dc6658cf8d20aca6cdf42bd
             this.students.push(data);
         } catch(error: any) {
             console.error('Erstellen fehlgeschlagen!', error);
@@ -93,7 +126,8 @@ actions: {
     async deleteStudent(id: number) {
         this.loading = true;
         try {
-            await axios.delete(`/api/Students/${id}`);
+            const baseURL = pickServiceUrl();
+            await axios.delete(`/api/Students/${id}`, {baseURL});
             this.students = this.students.filter(s => s.id !== id);
             
             if (this.currentStudent?.id === id) {
@@ -110,7 +144,8 @@ actions: {
     async updateStudent(student: Student) {
         this.loading = true;
         try {
-            await axios.put(`/api/Students/${student.id}`, student);
+            const baseURL = pickServiceUrl();
+            await axios.put(`/api/Students/${student.id}`, student, {baseURL});
             const index = this.students.findIndex(s => s.id === student.id);
             if (index !== -1) {
                 this.students[index] = student;
@@ -121,6 +156,21 @@ actions: {
         } finally {
             this.loading = false;
         }
+    },
+    // Test-Methode für Round-Robin Load Balancing
+    async testRoundRobin(times = 9) {
+    for (let i = 0; i < times; i++) {
+        const baseURL = pickServiceUrl();
+        try {
+        const info = await axios.get('/info', { baseURL, timeout: 1000 });
+        console.log("ROUND-ROBIN HIT:", info.data);
+        } catch (e) {
+        console.warn("INSTANCE DOWN:", baseURL);
+        i--; 
+        }
     }
+    }
+
+
   }
 })
