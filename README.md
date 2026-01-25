@@ -163,17 +163,28 @@ implementiert sind.
 ---
 (Bearbeitet von: Bojan Zaric)
 
-In unserem Microservice wird die API-Dokumentation automatisch aus dem Programmcode generiert ("Code-First"-Ansatz). Wir nutzen dafür die Bibliothek Swashbuckle (Swagger).
+### 1. Die OpenAPI-Spezifikation unseres Services
 
-Implementierung: Die Spezifikation wird zur Laufzeit generiert, indem der SwaggerGenerator die Controller-Klassen analysiert. Er liest dabei:
+In unserem Microservice verfolgen wir den "Code-First"-Ansatz, bei dem die API-Dokumentation automatisch aus dem Programmcode generiert wird. Wir nutzen dafür die Bibliothek **Swashbuckle**.
 
-- Routen: Aus den Attributen wie [Route("api/[controller]")].
+**Implementierung:**
+Die Spezifikation wird zur Laufzeit generiert, indem der `SwaggerGenerator` die Controller-Klassen analysiert. Er mappt C#-Konstrukte auf OpenAPI-Definitionen:
+* **Routen:** Werden aus Attributen wie `[Route("api/[controller]")]` ausgelesen.
+* **HTTP-Methoden:** Werden aus Attributen wie `[HttpGet]` oder `[HttpPost]` abgeleitet.
+* **Parameter:** Stammen aus den Methoden-Signaturen (z. B. `int id`, `[FromBody] Student student`).
+* **Datenschemata:** Die Struktur der Models (Components) wird analysiert, damit Clients die erwarteten Datentypen kennen.
 
-- HTTP-Methoden: Aus Attributen wie [HttpGet], [HttpPost].
+### 2. Vergleich: IDL, WSDL und OpenAPI
 
-- Parameter: Aus Methoden-Signaturen (int id, [FromBody] Student student).
+Die folgende Tabelle stellt die historische Entwicklung und die Unterschiede der Schnittstellenbeschreibungen dar:
 
-- Rückgabetypen: Aus den Rückgabewerten der Methoden und Produces-Attributen.
+| Merkmal | **IDL** (Interface Definition Language) | **WSDL** (Web Services Description Language) | **OpenAPI** (früher Swagger) |
+| :--- | :--- | :--- | :--- |
+| **Konzept** | Ein generischer Überbegriff für Sprachen, die Schnittstellen abstrakt definieren. | Ein XML-basiertes Format zur Beschreibung von Netzwerkdiensten. | Ein Standard zur Beschreibung von RESTful APIs. |
+| **Format** | Abhängig von der Technologie (z. B. `.proto` bei gRPC, `.thrift`). | **XML** (Extensible Markup Language). | **JSON** oder **YAML**. |
+| **Architektur** | Oft genutzt für **RPC** (Remote Procedure Call), CORBA oder gRPC. | Streng verbunden mit **SOAP** (Simple Object Access Protocol). | Standard für **REST** (Representational State Transfer). |
+| **Lesbarkeit** | Teils kryptisch, eher für Compiler/Generatoren gedacht. | Sehr komplex, schwer für Menschen lesbar ("Maschinenformat"). | Gut lesbar für Menschen und Maschinen. |
+| **Fokus** | Performance, binäre Serialisierung, sprachübergreifende Methodenaufrufe. | Strikte Verträge ("Contract-First"), Transaktionen, Sicherheit. | Einfachheit, Web-Standards, Dokumentation und Client-Generierung. |
 
 
 ## AUFGABE 5: SERVICE-KLASSE & DEPENDENCY INJECTION
@@ -845,5 +856,6 @@ und Komplexität erfordert.
 
 Im vorliegenden Projekt wird bewusst auf Sessions verzichtet und ein stateless
 Ansatz verfolgt.
+
 
 
