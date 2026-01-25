@@ -27,7 +27,8 @@ export const useStudentStore = defineStore('student', {
         students: [] as Student[],
         currentStudent: null as Student| null,
         loading: false,
-        error: null as string | null
+        error: null as string | null,
+        stats: null as any // Hinzugefügt für Statistik-Daten
     }),
 
 // Aktionen für API-Aufrufe
@@ -150,6 +151,21 @@ actions: {
         } catch (error) {
             console.error('Update fehlgeschlagen!');
             throw error;
+        } finally {
+            this.loading = false;
+        }
+    },
+
+    // Statistik abrufen (Neue Action)
+    async getStatistics() {
+        this.loading = true;
+        try {
+            const baseURL = pickServiceUrl();
+            const response = await axios.get('/api/Students/stats/overview', { baseURL });
+            this.stats = response.data;
+        } catch (error) {
+            console.error('Statistik laden fehlgeschlagen', error);
+            this.stats = null;
         } finally {
             this.loading = false;
         }

@@ -2,12 +2,14 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useStudentStore } from '@/stores/studentStore'
 import type Student from '@/types/Student'
+import StatisticsDialog from './StatisticsDialog.vue'
 
 const store = useStudentStore()
 
 const search = ref('')
 const dialog = ref(false)
 const dialogDelete = ref(false)
+const statsDialog = ref(false) // Neuer Dialog für Statistik
 const snackbar = ref(false)
 const snackbarText = ref('')
 const snackbarColor = ref('success')
@@ -112,6 +114,12 @@ function showSnackbar(text: string, color: string) {
   snackbar.value = true
 }
 
+// Statistik öffnen
+async function openStats() {
+    await store.getStatistics()
+    statsDialog.value = true
+}
+
 function handleRowClick(_: any, row: { item: Student }) {
     editItem(row.item)
 }
@@ -147,6 +155,17 @@ function handleRowClick(_: any, row: { item: Student }) {
       <template v-slot:top>
         <v-toolbar flat>
           <v-spacer></v-spacer>
+          
+          <!-- Statistik Button -->
+          <v-btn
+            class="mb-2 mr-2"
+            color="info"
+            prepend-icon="mdi-chart-bar"
+            @click="openStats"
+          >
+            Statistik
+          </v-btn>
+
           <!-- Download Button -->
           <v-btn
             class="mb-2 mr-2"
@@ -156,6 +175,9 @@ function handleRowClick(_: any, row: { item: Student }) {
           >
             Download CSV
           </v-btn>
+
+          <!-- Verwenden der neuen Statistik Component -->
+          <StatisticsDialog v-model="statsDialog" />
 
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ props }">
