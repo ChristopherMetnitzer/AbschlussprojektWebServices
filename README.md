@@ -319,6 +319,8 @@ Aufwand: [PLATZHALTER]
 
 Siehe 1. Punkt: Anwendung
 
+![Abstrakte Darstellung des Projekts](assets/project_overview.png)
+
 ---
 
 ## AUFGABE 12: AUTHENTIFIZIERUNG & SECURITY
