@@ -351,6 +351,13 @@ Aufgabenbereich:
 - Aufgabe 10: Projektdokumentation, Aufbereitung & Präsentation (Architekturüberblick, Demo, Lessons Learned)
 Aufwand: 
 - ca. 4.5 – 5.5 Stunden
+
+MITGLIED 5: Bojan Zarc
+------------------------------
+Aufgabenbereich: 
+- Aufgabe 4: OpenAPI Spezifikation (Implementierung Swagger & Theorievergleich IDL/WSDL)
+- Aufgabe 7: Routing (Standard- & Custom-Routing Konzepte und Umsetzung)
+Aufwand: ca. 2 - 3 Stunden
 ---
 
 
@@ -838,4 +845,5 @@ und Komplexität erfordert.
 
 Im vorliegenden Projekt wird bewusst auf Sessions verzichtet und ein stateless
 Ansatz verfolgt.
+
 
