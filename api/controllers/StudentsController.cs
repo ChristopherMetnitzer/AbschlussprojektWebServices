@@ -41,8 +41,8 @@ namespace Abschlussprojekt.Controllers
             var students = _service.GetAll();
             
             // Wir geben die Liste und den Uni-Namen zurück
-            //return Ok(new { University = uniName, Data = students });
-            return Ok(students);
+            return Ok(new { University = uniName, Data = students });
+            //return Ok(students);
 
             
 
