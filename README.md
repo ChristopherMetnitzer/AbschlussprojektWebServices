@@ -26,15 +26,41 @@ Um das gesamte Projekt (Backend API und Client) ohne manuelle Installation von A
 
 ## AUFGABE 1: SERVICE BESCHREIBUNG & DOMAIN DRIVEN DESIGN (DDD)
 ---
-(Bearbeitet von: [PLATZHALTER NAME])
+(Bearbeitet von: Stefan Ebner)
 
-[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
-- Bounded Context Beschreibung
-- Context Map
-- Ubiquitous Language
-- Datenmodell Beschreibung
+Der "Student Administration Service" ist ein eigenständiger Microservice zur Verwaltung von Studenten-Stammdaten. Innerhalb dieses Bounded Contexts gelten einheitliche fachliche Begriffe, Regeln und Modelle.
 
----
+Servicebeschreibung und Verantwortlichkeiten:
+
+1. Kernfunktionalität
+   - Route: /api/students
+     Funktion: Stellt eine REST-API bereit, welche die vollständige Verwaltung von Studenten über CRUD-Operationen ermöglicht.
+     Verantwortung: Zuständig ausschließlich für Studenten-Stammdaten; der Service enthält keine fachfremden Verantwortlichkeiten wie Prüfungen oder Kurse.
+
+2. Bounded Context: Student Administration
+   - Fokus: Verwaltung von Studenten, Definition fachlicher Regeln (z. B. gültiges Semester) und Verwaltung der Matrikelnummer.
+   - Abgrenzung: Andere Domänen wie Lehrveranstaltungen, Noten oder Authentifizierung gehören explizit nicht zu diesem Kontext.
+
+3. Context Map (Integrationen)
+   - Client SPA (Downstream): Konsumiert die REST-API als Customer / Supplier über synchrone Kommunikation via HTTP/REST.
+   - Student Administration Service (Upstream): Stellt API-Verträge über OpenAPI/Swagger bereit.
+   - Asynchroner Event Worker: Verarbeitet Domain Events (StudentCreated, StudentDeleted) über eine In-Memory-Queue (Publisher/Subscriber).
+
+4. Datenmodell (Domain Model)
+   - Aggregate Root: Student.
+   - Attribute:
+     Id (int): Eindeutige technische Identität.
+     Name (string): Vollständiger Name des Studenten.
+     Matrikelnummer (string): Fachliche Identität des Studenten.
+     Semester (int): Aktuelles Studiensemester.
+
+
+
+5. Datenvalidierung (Fachliche Invarianten)
+   - Pflichtfelder: Name und Matrikelnummer dürfen nicht leer oder null sein.
+   - Wertebereiche: Das Semester muss eine Ganzzahl in einem gültigen Bereich (z. B. 1 bis 10) sein.
+   - Eindeutigkeitsregeln: Die Matrikelnummer muss systemweit eindeutig sein und darf nicht mehrfach vergeben werden.
+   - Fehlerbehandlung: 400 Bad Request bei Validierungsfehlern oder 404 Not Found bei nicht existierenden Studenten.
 
 ## AUFGABE 2: ASP.NET CORE WEB API CONTROLLER (CRUD)
 ---
@@ -305,11 +331,13 @@ MITGLIED 3: Neven Lazic
 Aufgabenbereich: Aufgabe 3 sowie alle erweiterten Aufgaben (Messaging & Logging, Resilience-Patterns, Load Balancing & Skalierung)
 Aufwand: ca. 4–5 Stunden
 
-MITGLIED 4: [PLATZHALTER NAME]
+MITGLIED 4: Stefan Ebner
 ------------------------------
-Aufgabenbereich: [PLATZHALTER]
-Aufwand: [PLATZHALTER]
-
+Aufgabenbereich: 
+- Aufgabe 1: Servicebeschreibung (DDD, Bounded Context, Context Map, Datenmodell & Validierung)
+- Aufgabe 10: Projektdokumentation, Aufbereitung & Präsentation (Architekturüberblick, Demo, Lessons Learned)
+Aufwand: 
+- ca. 4.5 – 5.5 Stunden
 ---
 
 
