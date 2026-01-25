@@ -161,9 +161,19 @@ implementiert sind.
 
 ## AUFGABE 4: OPENAPI SPEZIFIKATION
 ---
-(Bearbeitet von: [PLATZHALTER NAME])
+(Bearbeitet von: Bojan Zaric)
 
-[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
+In unserem Microservice wird die API-Dokumentation automatisch aus dem Programmcode generiert ("Code-First"-Ansatz). Wir nutzen dafür die Bibliothek Swashbuckle (Swagger).
+
+Implementierung: Die Spezifikation wird zur Laufzeit generiert, indem der SwaggerGenerator die Controller-Klassen analysiert. Er liest dabei:
+
+- Routen: Aus den Attributen wie [Route("api/[controller]")].
+
+- HTTP-Methoden: Aus Attributen wie [HttpGet], [HttpPost].
+
+- Parameter: Aus Methoden-Signaturen (int id, [FromBody] Student student).
+
+- Rückgabetypen: Aus den Rückgabewerten der Methoden und Produces-Attributen.
 
 
 ## AUFGABE 5: SERVICE-KLASSE & DEPENDENCY INJECTION
@@ -226,12 +236,15 @@ Axios wird innerhalb der Store-Actions verwendet, um Requests an das .NET Backen
 
 ## AUFGABE 7: ROUTING
 ---
-(Bearbeitet von: [PLATZHALTER NAME])
+(Bearbeitet von: Bojan Zaric)
 
+Routing in ASP.NET Core:
+Das Routing ist dafür verantwortlich, eingehende HTTP-Anfragen (Requests) den entsprechenden C#-Methoden in den Controllern zuzuweisen. Das Framework analysiert dabei die URL und das HTTP-Verb (GET, POST, etc.).
 
-[HIER PLATZHALTER FÜR DIE DOKUMENTATION DES KOLLEGEN]
-(Hinweis: Das Standard-Routing [Route("api/[controller]")] wurde von 
-Christopher im Backend bereits implementiert. Custom Routes fehlen noch.)
+Wir verwenden in diesem Projekt Attribute Routing:
+   - Standard-Routing: Durch das Attribut [Route("api/[controller]")] über der Klasse wird automatisch der Name des Controllers (hier: "Students") als Basis-Pfad verwendet (/api/students). Dies entspricht dem REST-Standard für Ressourcen.
+     
+   - Custom Routing: Für Speziellere Abfragen, die nicht direkt eine einzelne Ressource per ID adressieren (z.B. Statistiken oder komplexe Filter), definieren wir spezifische Routen direkt an der Methode.
 
 ---
 
@@ -825,3 +838,4 @@ und Komplexität erfordert.
 
 Im vorliegenden Projekt wird bewusst auf Sessions verzichtet und ein stateless
 Ansatz verfolgt.
+
