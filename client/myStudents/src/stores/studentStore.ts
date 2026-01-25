@@ -154,6 +154,35 @@ actions: {
             this.loading = false;
         }
     },
+
+    // CSV Download
+    async downloadStudentsCsv() {
+      try {
+        const baseURL = pickServiceUrl();
+        // Anfrage an den Export-Endpunkt
+        const response = await axios.get('/api/Students/export', {
+          baseURL,
+          responseType: 'blob', // Damit wir die Datei als Blob erhalten
+          headers: {
+              'Accept': 'text/csv'
+          }
+        });
+
+        // Simuliere einen Klick auf einen unsichtbaren Link
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'students.csv');
+        document.body.appendChild(link);
+        link.click();
+        
+        // Aufräumen
+        link.remove();
+      } catch (error) {
+        console.error('CSV Download fehlgeschlagen', error);
+      }
+    },
+
     // Test-Methode für Round-Robin Load Balancing
     async testRoundRobin(times = 9) {
     for (let i = 0; i < times; i++) {

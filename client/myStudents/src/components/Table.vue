@@ -147,6 +147,16 @@ function handleRowClick(_: any, row: { item: Student }) {
       <template v-slot:top>
         <v-toolbar flat>
           <v-spacer></v-spacer>
+          <!-- Download Button -->
+          <v-btn
+            class="mb-2 mr-2"
+            color="secondary"
+            prepend-icon="mdi-download"
+            @click="store.downloadStudentsCsv()"
+          >
+            Download CSV
+          </v-btn>
+
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ props }">
               <v-btn
