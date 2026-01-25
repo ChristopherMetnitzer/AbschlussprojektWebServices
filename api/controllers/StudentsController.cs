@@ -28,8 +28,7 @@ namespace Abschlussprojekt.Controllers
 
         // --- READ (Alle lesen) ---
         [HttpGet] // Standard Route
-        [HttpGet("export")] // Alias fuer Export
-        [Produces("text/csv", "application/json", "application/xml")]  // XML-Formatierung unterstützen
+        [Produces("application/json", "application/xml")]  // XML-Formatierung unterstützen
         public IActionResult GetAll()
         {
             // Erweiterte Aufgabe 2: Response Caching-Header setzen
@@ -41,11 +40,17 @@ namespace Abschlussprojekt.Controllers
             var students = _service.GetAll();
             
             // Wir geben die Liste und den Uni-Namen zurück
-            //return Ok(new { University = uniName, Data = students });
+            return Ok(new { University = uniName, Data = students });
+        }
+
+        // --- READ (Export) ---
+        [HttpGet("export")]
+        [Produces("text/csv")]
+        public IActionResult Export()
+        {
+            var students = _service.GetAll();
+            // Gibt direkt die Liste zurück, damit der CsvOutputFormatter greift
             return Ok(students);
-
-            
-
         }
 
         [HttpGet("paged")]
