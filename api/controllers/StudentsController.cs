@@ -78,9 +78,25 @@ namespace Abschlussprojekt.Controllers
                     TotalCount = totalCount, 
                     Items = items 
                 });
+        }
+        // AUFGABE 7: Custom Route (Implementiert von Bojan Zaric)
+        // Route: api/students/stats/overview
+        [HttpGet("stats/overview")]
+        public IActionResult GetStudentStatistics()
+        {
+            // Wir nutzen den Service, um Daten zu holen
+            var allStudents = _service.GetAll();
+            
+            // Wir berechnen eine einfache Statistik (kein Standard-CRUD)
+            var stats = new
+            {
+                TotalCount = allStudents.Count(),
+                Topic = "Fachhochschule", 
+                ServerTime = DateTime.Now,
+                Status = "Active"
+            };
 
-
-
+            return Ok(stats);
         }
 
 
